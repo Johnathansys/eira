@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Journal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Daily Journal</h1>
+    <form method="POST">
+        <textarea name="entry" placeholder="How are you feeling today?" required></textarea>
+        <button type="submit">Save</button>
+    </form>
+    <h2>Past Entries</h2>
+    {% for id, entry, date in entries %}
+        <div class="entry">
+            <p>{{ entry }}</p>
+            <small>{{ date }}</small>
+        </div>
+    {% endfor %}
+    <a href="/">Back to Home</a>
+</body>
+</html>
