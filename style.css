@@ -1,0 +1,23 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f8ff;
+    color: #333;
+    text-align: center;
+}
+
+nav a {
+    margin: 0 10px;
+    color: #0077cc;
+    text-decoration: none;
+}
+
+textarea {
+    width: 80%;
+    height: 100px;
+    margin: 10px 0;
+}
+
+.entry {
+    border-bottom: 1px solid #ccc;
+    padding: 10px;
+}
