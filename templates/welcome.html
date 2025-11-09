@@ -1,5 +1,26 @@
-Welcome {{session["Username"]}}! 
-<br>
-<a href="/password">Change Password</a>
-<br>
-<a href="/logout">Log Out</a>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Welcome {{ session["Username"] }}!</h1>
+    </header>
+
+    <section class="welcome-content">
+        <a href="/password" class="button">Change Password</a>
+        <br>
+        <a href="/logout" class="button">Log Out</a>
+        <br><br>
+        <!-- Button to go to the Home Page -->
+        <a href="/" class="button home-button">Go to Home Page</a>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 Mental Health Hub. All rights reserved.</p>
+    </footer>
+</body>
+</html>
