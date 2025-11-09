@@ -1,20 +1,8 @@
 from flask import Flask, render_template, request, session, redirect, url_for
 import sqlite3
-import hashlib
 
 app = Flask(__name__)
 app.secret_key = "random"  # Secret key for sessions
-
-@app.route("/home")
-def home():
-    return render_template('index.html')
-
-@app.route("/welcome")
-def welcome():
-    if "Username" in session:
-        return render_template("welcome.html")
-    else:
-        return redirect("/")  # Redirect to home if not logged in
 
 # Initialize database and table if not exists
 con = sqlite3.connect("userdata.db", check_same_thread=False)
@@ -29,6 +17,7 @@ cur.execute("""
 con.commit()
 con.close()
 
+# Route for the Home (Login) page
 @app.route('/', methods=["GET", "POST"])
 def home():
     if "Username" in session:
@@ -44,9 +33,8 @@ def signup():
     else:
         con = sqlite3.connect("userdata.db")
         cur = con.cursor()
-        hashed = hashlib.sha256(request.form["Password"].encode()).hexdigest()
         cur.execute("INSERT INTO User (username, password) VALUES (?, ?)",
-                    (request.form["Username"], hashed))
+                    (request.form["Username"], request.form["Password"]))  # No hashing for now
         con.commit()
         con.close()
         return redirect("/")  # Redirect to the login page after successful signup
@@ -59,9 +47,8 @@ def login():
     else:
         con = sqlite3.connect("userdata.db")
         cur = con.cursor()
-        hashed = hashlib.sha256(request.form["Password"].encode()).hexdigest()
         cur.execute("SELECT * FROM User WHERE username = ? AND password = ?",
-                    (request.form["Username"], hashed))
+                    (request.form["Username"], request.form["Password"]))  # No hashing for now
         data = cur.fetchall()
         con.commit()
         con.close()
@@ -69,23 +56,24 @@ def login():
             return "Login Unsuccessful. Try again."
         else:
             session["Username"] = request.form["Username"]
-            return render_template("welcome.html")
+            return redirect("/welcome")  # Redirect to welcome page after successful login
 
+# Route for the Password Change page
 @app.route("/password", methods=["GET", "POST"])
 def password():
     if "Username" in session:
         if request.method == "POST":
             con = sqlite3.connect("userdata.db")
             cur = con.cursor()
-            hashed = hashlib.sha256(request.form["Password"].encode()).hexdigest()
             cur.execute("UPDATE User SET password = ? WHERE username = ?",
-                        (hashed, session["Username"]))
+                        (request.form["Password"], session["Username"]))  # No hashing for now
             con.commit()
             con.close()
             return "Password Updated"
         return render_template("change_password.html")
     return redirect("/")
 
+# Route for Logging Out
 @app.route("/logout")
 def logout():
     session.pop("Username", None)
