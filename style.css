@@ -70,3 +70,31 @@ footer {
 footer p {
     font-size: 1rem;
 }
+
+
+.button {
+    display: inline-block;
+    padding: 12px 25px;
+    background-color: #8f5d33; /* Soft brown */
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    margin: 10px 0;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.button:hover {
+    background-color: #7a4b28;  /* Darker brown on hover */
+    transform: scale(1.05); /* Slightly increase size for hover effect */
+}
+
+/* Special styling for the home button */
+.home-button {
+    background-color: #9b7c5f; /* Slightly different brown for home */
+}
+
+.home-button:hover {
+    background-color: #7a5f46; /* Darken for hover */
+}
