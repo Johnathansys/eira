@@ -1,18 +1,27 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Mental Health Hub
-        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-        </title>
-    </head>
-    <body>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mental Health Hub</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
         <h1>Welcome to the Mental Health Hub!</h1>
         <nav>
             <a href="/">Home</a>
             <a href="/resources">Resources</a>
-            <a href="/jounal">Journal</a>
+            <a href="/journal">Journal</a>
             <a href="/contact">Contact</a>
         </nav>
-        <p>Your safe space for mental well-being.</p>
-    </body>
+    </header>
+
+    <section class="intro">
+        <p>Your safe space for mental well-being. Take a step towards better mental health.</p>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 Mental Health Hub. All rights reserved.</p>
+    </footer>
+</body>
 </html>
