@@ -2,140 +2,51 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mental Health Hub</title>
+    <title>Welcome to Eira</title>
     <style>
-        /* General reset */
-        * {
+        body {
+            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
         }
 
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f0e6f6;  /* Light, soft lavender color */
-            color: #4a3f35;  /* Soft brown text */
-            line-height: 1.6;
-        }
-
-        header {
-            background-color: #9b7c5f;  /* Warm, earthy brown */
-            color: white;
+        .container {
             text-align: center;
-            padding: 20px;
-            margin-bottom: 30px;
+            max-width: 400px;
         }
 
-        header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-        }
-
-        /* Logo styles */
-        .logo {
-            width: 120px;  /* Adjust width as needed */
-            height: auto;
-            margin-bottom: 20px;  /* Space between logo and header text */
-        }
-
-        nav {
-            margin-top: 15px;
-        }
-
-        nav a {
-            color: white;
-            text-decoration: none;
-            padding: 10px 20px;
-            font-size: 1.1rem;
-            margin: 0 15px;
-            border-radius: 5px;
-            background-color: #8f5d33;  /* Soft muted brown */
-        }
-
-        nav a:hover {
-            background-color: #7a4b28;  /* Darker brown on hover */
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        .intro {
-            text-align: center;
-            margin: 0 auto;
-            padding: 30px;
-            background-color: #f4e3d4;  /* Soft, creamy beige */
-            width: 80%;
-            max-width: 900px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .intro h2 {
-            font-size: 2rem;
+        h1 {
             margin-bottom: 20px;
+            font-size: 32px;
         }
 
-        .intro input {
-            padding: 10px;
-            width: 80%;
-            margin: 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-
-        .intro button {
-            padding: 12px 25px;
-            background-color: #8f5d33; /* Soft brown */
-            color: white;
-            text-align: center;
+        a {
             text-decoration: none;
-            border-radius: 8px;
-            font-size: 1.1rem;
-            margin: 10px 0;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
-
-        .intro button:hover {
-            background-color: #7a4b28;  /* Darker brown on hover */
-            transform: scale(1.05); /* Slightly increase size for hover effect */
-        }
-
-        footer {
-            text-align: center;
-            margin-top: 50px;
-            padding: 20px;
-            background-color: #9b7c5f;  /* Same brown as header */
-            color: white;
-        }
-
-        footer p {
-            font-size: 1rem;
+            font-size: 18px;
+            display: block;
+            margin: 8px 0;
         }
     </style>
 </head>
+
 <body>
-    <header>
-        <!-- Logo Image -->
-        <img src="eiralogo.png" alt="Eira Logo" class="logo">
+    <div class="container">
+
         <h1>Welcome to Eira!</h1>
-        <nav>
-            <a href="/">Home</a>
-            <a href="/signup">Sign Up</a>
-            <a href="/login">Login</a>
-            <a href="/contact">Contact</a>
-        </nav>
-    </header>
 
-    <section class="intro">
-        <h2>Login</h2>
-        <form method="POST">
-            <input type="text" name="Username" placeholder="Username" required><br>
-            <input type="password" name="Password" placeholder="Password" required><br>
-            <button type="submit" class="button">Log In</button>
-        </form>
-    </section>
+        {% if 'Username' in session %}
+            <p>You are logged in as: <strong>{{ session['Username'] }}</strong></p>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        {% else %}
+            <p>You are not logged in.</p>
+            <a href="{{ url_for('login') }}">Login</a>
+            <a href="{{ url_for('signup') }}">Sign Up</a>
+        {% endif %}
 
-    <footer>
-        <p>&copy; 2025 Mental Health Hub. All rights reserved.</p>
-    </footer>
+    </div>
 </body>
 </html>
