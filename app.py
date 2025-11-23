@@ -26,7 +26,7 @@ def home():
         return render_template("/index.html")  # Show login page if not logged in
 
 # Route for the Welcome page (if logged in)
-@app.route("/welcome", methods=["GET",)
+@app.route("/welcome", methods=["GET"])
 def welcome():
     if "Username" in session:
         return render_template("/welcome.html")  # Show the welcome page if logged in
@@ -42,13 +42,13 @@ def signup():
         con = sqlite3.connect("userdata.db")
         cur = con.cursor()
         cur.execute("INSERT INTO User (username, password) VALUES (?, ?)",
-                    (request.form["Username"], request.form["Password"]))  # No hashing for now
+                    (request.form["username"], request.form["password"]))  # No hashing for now
         con.commit()
         con.close()
         return redirect("/login.html")  # Redirect to the login page after successful signup
 
 # Route for the Login page
-@app.route('/login', methods=["GET", "POST"])
+@app.route('/login', methods=["GET","POST"])
 def login():
     if request.method == "GET":
         return render_template("/login.html")  # Render the login form
@@ -56,37 +56,11 @@ def login():
         con = sqlite3.connect("userdata.db")
         cur = con.cursor()
         cur.execute("SELECT * FROM User WHERE username = ? AND password = ?",
-                    (request.form["Username"], request.form["Password"]))  # No hashing for now
+                    (request.form["username"], request.form["password"]))  # No hashing for now
         data = cur.fetchall()
         con.commit()
         con.close()
-        if len(data) == 0:
-            return render_template("login.html")  # Render the login form
-            return "Login Unsuccessful. Try again."
-        else:
-            session["Username"] = request.form["Username"]
-            return redirect("/welcome.html")  # Redirect to welcome page after successful login
 
-# Route for the Password Change page
-@app.route("/password", methods=["GET", "POST"])
-def password():
-    if "Username" in session:
-        if request.method == "POST":
-            con = sqlite3.connect("userdata.db")
-            cur = con.cursor()
-            cur.execute("UPDATE User SET password = ? WHERE username = ?",
-                        (request.form["Password"], session["Username"]))  # No hashing for now
-            con.commit()
-            con.close()
-            return "Password Updated"
-        return render_template("change_password.html")
-    return redirect("/welcome.html")
-
-# Route for Logging Out
-@app.route("/logout")
-def logout():
-    session.pop("Username", None)
-    return redirect("/")
 
 if __name__ == "__main__":
     app.run(debug=True)
