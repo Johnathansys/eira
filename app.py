@@ -51,7 +51,7 @@ def signup():
 @app.route('/login', methods=["GET","POST"])
 def login():
     if request.method == "GET":
-        return render_template("/login.html")  # Render the login form
+        return render_template("login.html")  # Render the login form
     else:
         con = sqlite3.connect("userdata.db")
         cur = con.cursor()
