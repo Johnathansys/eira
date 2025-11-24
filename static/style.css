@@ -1,8 +1,18 @@
-body {
+/* RESET */
+* {
     margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* BODY */
+body {
     font-family: Arial, Helvetica, sans-serif;
-    background: #f7f8fc;
-    color: #222;
+    background-color: #f0e6f6;      /* soft lavender */
+    color: #4a3f35;                 /* soft brown */
+    line-height: 1.6;
+    margin: 0;
+    padding: 20px;
 }
 
 /* NAVBAR */
@@ -28,97 +38,148 @@ body {
     font-weight: 700;
 }
 
-/* MAIN CONTAINER */
-.container {
-    width: 420px;
-    margin: 60px auto;
-    background: #fff;
-    padding: 35px;
-    border-radius: 12px;
-    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+/* HEADER */
+header {
+    background-color: #9b7c5f;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    margin-bottom: 30px;
 }
 
-h1 {
-    text-align: center;
+header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+/* LOGO */
+.logo {
+    width: 120px;
+    height: auto;
     margin-bottom: 20px;
 }
 
-.info-text {
-    text-align: center;
-    font-size: 17px;
-    margin-bottom: 25px;
+/* NAV LINKS */
+nav {
+    margin-top: 15px;
 }
 
-.highlight {
-    font-weight: bold;
-}
-
-/* BUTTONS */
-.button, .button-outline {
-    display: inline-block;
-    padding: 12px 22px;
-    border-radius: 8px;
-    font-size: 16px;
+nav a {
+    color: white;
     text-decoration: none;
+    padding: 10px 20px;
+    font-size: 1.1rem;
+    margin: 0 15px;
+    border-radius: 5px;
+    background-color: #8f5d33;
+}
+
+nav a:hover {
+    background-color: #7a4b28;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* INTRO BOX (HOME PAGE) */
+.intro {
     text-align: center;
-    margin: 8px;
+    margin: 0 auto;
+    padding: 30px;
+    background-color: #f4e3d4;
+    width: 80%;
+    max-width: 900px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
-.button {
-    background: #2C7FFF;
-    color: white;
+.intro h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
 }
 
-.button:hover {
-    background: #1d63db;
-}
-
-.button-outline {
-    border: 2px solid #2C7FFF;
-    color: #2C7FFF;
-}
-
-.button-outline:hover {
-    background: #2C7FFF;
-    color: white;
-}
-
-/* FORMS */
-form label {
-    font-size: 15px;
-    margin-top: 12px;
-    display: block;
-}
-
-input {
-    width: 100%;
+.intro input {
     padding: 10px;
-    margin-top: 5px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 15px;
-}
-
-/* ERROR MESSAGE */
-.error {
-    background: #ffdddd;
-    color: #a60000;
-    padding: 10px;
-    margin-bottom: 15px;
-    border-left: 4px solid #a60000;
+    width: 80%;
+    margin: 10px 0;
+    border: 1px solid #ddd;
     border-radius: 5px;
 }
 
-.alt-link {
+.intro button {
+    padding: 12px 25px;
+    background-color: #8f5d33;
+    color: white;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    margin: 10px 0;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.intro button:hover {
+    background-color: #7a4b28;
+    transform: scale(1.05);
+}
+
+/* FORM CONTAINERS (SIGNUP + LOGIN) */
+form {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f4e3d4;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+form input[type="text"],
+form input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 15px;
+}
+
+form input[type="submit"],
+button {
+    width: 100%;
+    padding: 12px;
+    background-color: #8f5d33;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+form input[type="submit"]:hover,
+button:hover {
+    background-color: #7a4b28;
+}
+
+/* LOGIN + SIGNUP LINKS */
+a {
+    display: block;
     text-align: center;
-    margin-top: 15px;
+    margin-top: 20px;
+    text-decoration: none;
+    color: #9b7c5f;
+    font-size: 1rem;
+}
+
+a:hover {
+    color: #7a5f46;
 }
 
 /* FOOTER */
 footer {
     text-align: center;
     margin-top: 50px;
-    color: #666;
+    padding: 20px;
+    background-color: #9b7c5f;
+    color: white;
 }
 
+footer p {
+    font-size: 1rem;
+}
