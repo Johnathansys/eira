@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/style.css">
+    <title>Eira - New Entry</title>
+</head>
+
+<body>
+    <header>
+        <img src="/static/eiralogo.png" alt="Eira Logo" class="logo">
+        <nav class="navbar">
+            <h1 class="nav-left">Eira!</h1>
+            <div>
+                <a href="/dashboard">Dashboard</a>
+                <a href="/logout">Logout</a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="main-content">
+        <div class="container">
+            <form method="POST" action="/journal_entry">
+                <h1>New Journal Entry</h1>
+
+                <input type="text" id="title" name="title" placeholder="A Title for Your Entry" required>
+
+                <label for="content" style="display: block; margin-top: 15px;">What's on your mind today?</label>
+                <textarea id="content" name="content" rows="15" placeholder="Start journaling here..." required></textarea>
+
+                <input type="submit" value="Save Entry" class="btn">
+            </form>
+            <a href="/dashboard">Back to Dashboard</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Mental Health Hub. All rights reserved.</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/style.css">
+    <title>Eira - View Entry</title>
+    <style>
+        .entry-detail {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 30px;
+            background-color: #a3a7df;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        .entry-detail h2 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: #54507e;
+        }
+        .entry-detail .date {
+            display: block;
+            font-size: 1em;
+            color: #6f6c91;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #6f6c91;
+            padding-bottom: 10px;
+        }
+        .entry-detail pre {
+            white-space: pre-wrap; /* Preserve formatting and wrap long lines */
+            font-family: inherit;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #130f1a;
+            padding: 10px;
+            margin-bottom: 30px;
+            background-color: #f7f7f7;
+            border-radius: 6px;
+        }
+        .delete-form {
+            text-align: right;
+        }
+        .delete-btn {
+            background-color: #ff5252; /* Red color for delete action */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: 0.25s ease;
+        }
+        .delete-btn:hover {
+            background-color: #e53935;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <img src="/static/eiralogo.png" alt="Eira Logo" class="logo">
+        <nav class="navbar">
+            <h1 class="nav-left">Eira!</h1>
+            <div>
+                <a href="/dashboard">Dashboard</a>
+                <a href="/logout">Logout</a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="main-content">
+        <div class="entry-detail">
+            <h2>{{ entry.title }}</h2>
+            <span class="date">Recorded on: {{ entry.timestamp }}</span>
+            <pre>{{ entry.content }}</pre>
+
+            <form method="POST" action="/delete/{{ entry.id }}" class="delete-form">
+                <button type="submit" class="delete-btn">Delete Entry</button>
+            </form>
+        </div>
+
+        <a href="/history">Back to History</a>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Mental Health Hub. All rights reserved.</p>
+    </footer>
+</body>
+</html>

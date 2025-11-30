@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/style.css">
+    <title>Eira - History</title>
+</head>
+
+<body>
+    <header>
+        <img src="/static/eiralogo.png" alt="Eira Logo" class="logo">
+        <nav class="navbar">
+            <h1 class="nav-left">Eira!</h1>
+            <div>
+                <a href="/dashboard">Dashboard</a>
+                <a href="/logout">Logout</a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="main-content">
+        <section class="intro">
+            <h2>Your Journal History</h2>
+            <p>A record of your reflections and growth.</p>
+        </section>
+
+        <ul class="history-list">
+            {% if entries %}
+            {% for entry in entries %}
+            <li class="intro entry-item">
+                <a href="/entry/{{ entry.id }}">{{ entry.title }}</a>
+                <span class="date">{{ entry.timestamp }}</span>
+            </li>
+            {% endfor %}
+            {% else %}
+            <p style="text-align: center; margin-top: 30px; font-size: 1.2rem; color: #6f6c91;">You haven't made any journal entries yet. Time to start!</p>
+            {% endif %}
+        </ul>
+
+        <a href="/dashboard">Back to Dashboard</a>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Mental Health Hub. All rights reserved.</p>
+    </footer>
+</body>
+</html>

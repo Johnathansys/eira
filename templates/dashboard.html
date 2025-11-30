@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/style.css">
+    <title>Eira - Dashboard</title>
+</head>
+
+<body>
+    <header>
+        <img src="/static/eiralogo.png" alt="Eira Logo" class="logo">
+        <nav class="navbar">
+            <h1 class="nav-left">Eira!</h1>
+            <div>
+                <a href="/dashboard">Dashboard</a>
+                <a href="/logout">Logout</a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="main-content">
+        <section class="intro">
+            <h2>Welcome back, <span style="color: #00e9e5; font-weight: 700;">{{ username }}</span>!</h2>
+            <p>Ready to reflect and grow? Here's your personal hub.</p>
+        </section>
+
+        <div class="dashboard-container">
+            <a href="/journal_entry" class="intro dashboard-link-item">
+                <h3>✍️ New Journal Entry</h3>
+                <p>Start writing down your thoughts and feelings.</p>
+            </a>
+            <a href="/history" class="intro dashboard-link-item">
+                <h3>📖 Journal History</h3>
+                <p>Review and reflect on past entries.</p>
+            </a>
+            <a href="#" class="intro dashboard-link-item disabled-link">
+                <h3>🗓️ Calendar View (Coming Soon)</h3>
+                <p>Visualize your progress over time.</p>
+            </a>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Mental Health Hub. All rights reserved.</p>
+    </footer>
+</body>
+</html>
