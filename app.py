@@ -2,7 +2,8 @@ from flask import Flask, render_template, request, session, redirect, url_for
 import sqlite3
 import os
 from werkzeug.security import generate_password_hash, check_password_hash
-from datetime import datetime 
+from datetime import datetime, timedelta
+import calendar 
 
 app = Flask(__name__)
 app.secret_key = "a_strong_and_unique_key_for_eira_app"
@@ -20,7 +21,7 @@ def init_db():
     conn = get_db_connection()
     cur = conn.cursor()
     
-    # 1. User Table (Existing)
+    # User Table
     cur.execute("""
         CREATE TABLE IF NOT EXISTS User
         (
@@ -29,7 +30,7 @@ def init_db():
         )
     """)
     
-    # 2. Journal Table (NEW)
+    # Journal Table
     cur.execute("""
         CREATE TABLE IF NOT EXISTS Journal
         (
@@ -87,6 +88,7 @@ def signup():
             conn.commit()
             return redirect(url_for("login"))
         except sqlite3.IntegrityError:
+            # Add error handling or flash message here if username exists
             return render_template("signup.html")
         finally:
             conn.close()
@@ -110,13 +112,80 @@ def login():
                 session["Username"] = user_data["username"] 
                 return redirect(url_for("dashboard")) 
             else:
+                # Add error handling or flash message for wrong password
                 return render_template("login.html") 
         else:
+            # Add error handling or flash message for user not found
             return render_template("login.html")
         
     return render_template("login.html")
 
-# --- Journal Entry Route ---
+# --- Calendar Route (IMPROVED) ---
+@app.route("/calendar", methods=["GET"])
+def calendar_view():
+    if not is_logged_in():
+        return redirect(url_for("index"))
+
+    username = session["Username"]
+    
+    # Determine the current month/year to display
+    try:
+        current_year = int(request.args.get('year', datetime.now().year))
+        current_month = int(request.args.get('month', datetime.now().month))
+        # Basic validation to ensure month is 1-12
+        if not 1 <= current_month <= 12:
+            raise ValueError
+    except ValueError:
+        current_year = datetime.now().year
+        current_month = datetime.now().month
+
+    # Calculate previous and next months using datetime for simplicity
+    first_day_of_month = datetime(current_year, current_month, 1)
+    
+    # Calculate prev month: go back one day from the 1st of the current month
+    prev_dt = first_day_of_month - timedelta(days=1)
+    # Calculate next month: go forward roughly 32 days from the 1st of the current month
+    next_dt = first_day_of_month + timedelta(days=32)
+    next_dt = datetime(next_dt.year, next_dt.month, 1)
+
+
+    # 2. Get entries for the current month
+    conn = get_db_connection()
+    # SQL query to fetch distinct dates that have entries in the current month
+    # We use LIKE to ensure SQLite correctly filters the YYYY-MM prefix
+    sql = """
+    SELECT DISTINCT strftime('%Y-%m-%d', timestamp) AS entry_date 
+    FROM Journal 
+    WHERE user_username = ? 
+    AND strftime('%Y-%m', timestamp) LIKE ?
+    """
+    
+    month_filter = f"{current_year}-{current_month:02d}"
+    entries = conn.execute(sql, (username, month_filter)).fetchall()
+    conn.close()
+    
+    # Convert list of rows into a dictionary for fast lookup in the template
+    entries_by_date = {row['entry_date']: True for row in entries}
+
+    # 3. Generate calendar data
+    cal = calendar.Calendar(firstweekday=calendar.SUNDAY) # Set calendar to start on Sunday
+    
+    # monthdayscalendar returns a list of lists (weeks), where days are integers (1-31) or 0
+    month_days = cal.monthdayscalendar(current_year, current_month)
+    
+    # Flatten the list and replace 0s with None for template processing
+    calendar_days = [day if day != 0 else None for week in month_days for day in week]
+
+    return render_template("calendar.html", 
+                           calendar_days=calendar_days,
+                           entries_by_date=entries_by_date,
+                           current_month=current_month,
+                           current_year=current_year,
+                           month_name=calendar.month_name[current_month],
+                           prev_month={'year': prev_dt.year, 'month': prev_dt.month},
+                           next_month={'year': next_dt.year, 'month': next_dt.month})
+
+# --- Journal Entry Route (remains unchanged) ---
 @app.route('/journal_entry', methods=["GET", "POST"])
 def journal_entry():
     if not is_logged_in():
@@ -144,22 +213,43 @@ def journal_entry():
 
     return render_template("journal_entry.html")
 
-# --- Journal History Route ---
+# --- Journal History Route (MODIFIED to accept date filter) ---
 @app.route('/history', methods=["GET"])
 def history():
     if not is_logged_in():
         return redirect(url_for("index"))
 
     username = session["Username"]
+    date_filter = request.args.get('date') # Get optional date filter from URL (?date=YYYY-MM-DD)
+    
     conn = get_db_connection()
-    # Fetch all entries for the logged-in user, ordered by timestamp descending
-    entries = conn.execute("SELECT id, title, strftime('%Y-%m-%d %H:%M', timestamp) AS timestamp FROM Journal WHERE user_username = ? ORDER BY timestamp DESC", 
-                            (username,)).fetchall()
+    
+    if date_filter:
+        # Filter by a specific date (e.g., from the calendar click)
+        sql = """
+        SELECT id, title, strftime('%Y-%m-%d %H:%M', timestamp) AS timestamp 
+        FROM Journal 
+        WHERE user_username = ? AND strftime('%Y-%m-%d', timestamp) = ?
+        ORDER BY timestamp DESC
+        """
+        entries = conn.execute(sql, (username, date_filter)).fetchall()
+        page_title = f"Entries for {date_filter}"
+    else:
+        # Default: Fetch all entries
+        sql = """
+        SELECT id, title, strftime('%Y-%m-%d %H:%M', timestamp) AS timestamp 
+        FROM Journal 
+        WHERE user_username = ? 
+        ORDER BY timestamp DESC
+        """
+        entries = conn.execute(sql, (username,)).fetchall()
+        page_title = "Your Journal History"
+
     conn.close()
 
-    return render_template("history.html", entries=entries)
+    return render_template("history.html", entries=entries, page_title=page_title)
 
-# --- View Specific Entry Route ---
+# --- View Specific Entry Route (remains unchanged) ---
 @app.route('/entry/<int:entry_id>', methods=["GET"])
 def view_entry(entry_id):
     if not is_logged_in():
@@ -167,7 +257,6 @@ def view_entry(entry_id):
 
     username = session["Username"]
     conn = get_db_connection()
-    # Fetch the specific entry, ensuring it belongs to the logged-in user
     entry = conn.execute("SELECT id, title, content, strftime('%Y-%m-%d %H:%M:%S', timestamp) AS timestamp FROM Journal WHERE id = ? AND user_username = ?", 
                           (entry_id, username)).fetchone()
     conn.close()
@@ -177,7 +266,7 @@ def view_entry(entry_id):
 
     return render_template("view_entry.html", entry=entry)
 
-# --- Delete Entry Route ---
+# --- Delete Entry Route (remains unchanged) ---
 @app.route('/delete/<int:entry_id>', methods=["POST"])
 def delete_entry(entry_id):
     if not is_logged_in():
@@ -186,7 +275,6 @@ def delete_entry(entry_id):
     username = session["Username"]
     conn = get_db_connection()
     
-    # Check if the entry exists and belongs to the user, then delete it
     cursor = conn.execute("DELETE FROM Journal WHERE id = ? AND user_username = ?", (entry_id, username))
     conn.commit()
     conn.close()

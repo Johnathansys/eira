@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/style.css">
+    <title>Eira - Calendar</title>
+</head>
+
+<body>
+    <header>
+        <img src="/static/eiralogo.png" alt="Eira Logo" class="logo">
+        <nav class="navbar">
+            <h1 class="nav-left">Eira!</h1>
+            <div>
+                <a href="/dashboard">Dashboard</a>
+                <a href="/history">History</a>
+                <a href="/logout">Logout</a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="main-content">
+        <section class="intro" style="max-width: 900px;">
+            <h2>Journal Calendar</h2>
+            <p>Select a date to view your entries.</p>
+        </section>
+
+        <div class="calendar-container">
+            <div class="calendar-header">
+                <a href="/calendar?year={{ prev_month.year }}&month={{ prev_month.month }}" class="nav-arrow">&lt; Prev</a>
+                <h3 class="month-title">{{ month_name }} {{ current_year }}</h3>
+                <a href="/calendar?year={{ next_month.year }}&month={{ next_month.month }}" class="nav-arrow">Next &gt;</a>
+            </div>
+
+            <div class="calendar-grid">
+                <div class="day-header">Sun</div>
+                <div class="day-header">Mon</div>
+                <div class="day-header">Tue</div>
+                <div class="day-header">Wed</div>
+                <div class="day-header">Thu</div>
+                <div class="day-header">Fri</div>
+                <div class="day-header">Sat</div>
+                
+                {% for day in calendar_days %}
+                    {% if day is none %}
+                        <div class="day-cell empty-day"></div>
+                    {% else %}
+                        {% set date_str = '%s-%02d-%02d' | format(current_year, current_month, day) %}
+                        
+                        <div class="day-cell {% if date_str in entries_by_date %}entry-day{% endif %}">
+                            <span class="day-number">{{ day }}</span>
+                            {% if date_str in entries_by_date %}
+                                <a href="/history?date={{ date_str }}" class="entry-link">
+                                    <span class="entry-indicator"></span>
+                                </a>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+
+        <a href="/dashboard" style="margin-top: 30px;">Back to Dashboard</a>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Mental Health Hub. All rights reserved.</p>
+    </footer>
+</body>
+</html>

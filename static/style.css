@@ -190,3 +190,106 @@ footer {
     display: block;
     margin: 0 auto 20px auto;
 }
+
+/* --- NEW ADDITIONS FOR CALENDAR --- */
+
+/* Calendar Container */
+.calendar-container {
+    max-width: 900px;
+    margin: 30px auto;
+    padding: 20px;
+    background-color: #a3a7df; /* sub alt */
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+/* Calendar Header */
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 0 10px;
+}
+
+.calendar-header .month-title {
+    font-size: 1.8rem;
+    color: #54507e;
+    font-weight: 700;
+}
+
+.calendar-header .nav-arrow {
+    /* Style for navigation links */
+    display: inline; /* Override default block style */
+    color: #130f1a;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin-top: 0; /* Override default margin */
+}
+
+.calendar-header .nav-arrow:hover {
+    color: #00e9e5;
+}
+
+/* Calendar Grid */
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr); /* 7 columns for days of the week */
+    gap: 5px;
+}
+
+.day-header {
+    background-color: #6f6c91; /* sub */
+    color: white;
+    padding: 10px 5px;
+    text-align: center;
+    font-weight: bold;
+    border-radius: 4px;
+}
+
+.day-cell {
+    position: relative;
+    background-color: #fff;
+    border: 1px solid #dcdcdc;
+    padding: 10px 5px;
+    height: 80px; /* Fixed height for consistent look */
+    text-align: right;
+    border-radius: 4px;
+}
+
+.empty-day {
+    background-color: #f0f0f5; /* Lightly muted background */
+    border: 1px solid #e0e0e0;
+}
+
+.day-number {
+    font-weight: bold;
+    color: #130f1a;
+}
+
+/* Day with an entry */
+.entry-day {
+    background-color: #ffe23e; /* error color for highlight */
+    cursor: pointer;
+    border-color: #54507e;
+    transition: background-color 0.2s;
+}
+
+.entry-day:hover {
+    background-color: #fff1c3; /* extra error color for hover */
+}
+
+/* The actual link covering the day cell */
+.entry-link {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    /* Hide the text/block link default style */
+    display: block; 
+    margin: 0; 
+    text-decoration: none;
+}
