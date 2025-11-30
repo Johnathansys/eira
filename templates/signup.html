@@ -1,17 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/static/style.css">
-    <title>Mental Health Hub</title>
+    <title>Mental Health Hub - Sign Up</title>
 </head>
 
 <body>
-    <h1>Sign Up</h1>
-    <form method="post">
-        Name: <input name="username" type="text" required> <br>
-        Password: <input name="password" type="password" required> <br>
-        <input type="submit" value="Sign Up">
-    </form>
-    <a href="/login">Already have an account? Log In</a>
+    <header>
+        <img src="/static/eiralogo.png" alt="Eira Logo" class="logo">
+        <nav class="navbar">
+            <h1 class="nav-left">Eira!</h1>
+            <div>
+                <a href="/">Home</a>
+                <a href="/signup">Sign Up</a>
+                <a href="/login">Login</a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="main-content">
+        <div class="container">
+            <form method="post" action="/signup">
+                <h1>Sign Up</h1>
+                <label>Username: </label> <input name="username" type="text" required> <br>
+                <label>Password: </label> <input name="password" type="password" required> <br>
+                <input type="submit" value="Sign Up">
+            </form>
+            
+            <a href="/login">Already have an account? Log In</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Mental Health Hub. All rights reserved.</p>
+    </footer>
 </body>
 </html>

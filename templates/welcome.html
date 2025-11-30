@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/style.css">
+    <title>Mental Health Hub - Welcome</title>
+</head>
+
+<body>
+    <header>
+        <!-- Logo Image -->
+        <img src="/static/eiralogo.png" alt="Eira Logo" class="logo">
+        
+        <!-- Navigation Bar -->
+        <nav class="navbar">
+            <h1 class="nav-left">Eira!</h1>
+            <div>
+                <a href="/">Home</a>
+                <!-- Hardcoded Logout link -->
+                <a href="/logout">Logout</a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="main-content">
+        <section class="intro">
+            <!-- *** THIS IS THE CRUCIAL CHANGE *** -->
+            <!-- The {{ username }} syntax is required for Flask/Jinja to print the session variable -->
+            <h2>Welcome back, <span style="color: #54507e; font-weight: 700;">{{ username }}</span>!</h2>
+            <p>This is your personal space. Start or review your journal entries below.</p>
+            
+            <!-- Placeholder for future functionality -->
+            <div style="margin-top: 30px;">
+                <button class="btn" style="width: 50%;">Start New Journal Entry</button>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Mental Health Hub. All rights reserved.</p>
+    </footer>
+</body>
+</html>

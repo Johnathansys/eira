@@ -1,25 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/static/style.css">
-    <title>Mental Health Hub</title>
+    <title>Mental Health Hub - Login</title>
 </head>
 
-
 <body>
-    <div class="container">
+    <header>
+        <img src="/static/eiralogo.png" alt="Eira Logo" class="logo">
+        <nav class="navbar">
+            <h1 class="nav-left">Eira!</h1>
+            <div>
+                <a href="/">Home</a>
+                <a href="/signup">Sign Up</a>
+                <a href="/login">Login</a>
+            </div>
+        </nav>
+    </header>
 
-        <h1>Login</h1>
+    <div class="main-content">
+        <div class="container">
+            <form method="POST" action="/login">
+                <h1>Login</h1>
+                <input type="text" name="username" placeholder="Username" required>
+                <input type="password" name="password" placeholder="Password" required>
+                <input type="submit" value="Login" class="btn">
+            </form>
 
-        <form method="POST">
-            <input type="text" name="username" placeholder="Username" required>
-            <input type="password" name="password" placeholder="Password" required>
-            <button type="submit" class="btn">Login</button>
-        </form>
-
-        <a href="/signup">Need an account? Sign Up</a>
-        <a href="/">Back to Home</a>
-
+            <a href="/signup">Need an account? Sign Up</a>
+            <a href="/">Back to Home</a>
+        </div>
     </div>
+
+    <footer>
+        <p>&copy; 2025 Mental Health Hub. All rights reserved.</p>
+    </footer>
 </body>
 </html>
