@@ -4,9 +4,12 @@ import os
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta
 import calendar 
+import os # Ensure os is imported
 
 app = Flask(__name__)
-app.secret_key = "a_strong_and_unique_key_for_eira_app"
+app.secret_key = os.environ.get("SECRET_KEY", "a_strong_and_unique_key_for_eira_app")
+
+DATABASE = "userdata.db"
 
 DATABASE = "userdata.db"
 
