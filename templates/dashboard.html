@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/static/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <title>Eira - Dashboard</title>
 </head>
 
@@ -25,6 +26,13 @@
             <p>Ready to reflect and grow? Here's your personal hub.</p>
         </section>
 
+        <!-- NEW: Mood trend chart -->
+        <div class="chart-container">
+            <h3>🧠 Your Mood Over Time</h3>
+            <canvas id="moodChart"></canvas>
+        </div>
+        <!-- END NEW -->
+
         <div class="dashboard-container">
             <a href="/journal_entry" class="intro dashboard-link-item">
                 <h3>✍️ New Journal Entry</h3>
@@ -44,5 +52,37 @@
     <footer>
         <p>&copy; 2025 Mental Health Hub. All rights reserved.</p>
     </footer>
+
+    <!-- NEW: Chart.js script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctx = document.getElementById('moodChart').getContext('2d');
+            const moodChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: {{ recent_dates | tojson }},
+                    datasets: [{
+                        label: 'Mood Rating',
+                        data: {{ recent_moods | tojson }},
+                        borderColor: '#00e9e5',
+                        backgroundColor: 'rgba(0, 233, 229, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 10,
+                            ticks: { stepSize: 1 }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+    <!-- END NEW -->
 </body>
 </html>

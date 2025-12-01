@@ -327,3 +327,57 @@ footer {
     vertical-align: middle;
 }
 
+.mood-rating {
+    margin-top: 20px;
+}
+
+.rating-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.rating-label {
+    font-weight: bold;
+    min-width: 20px;
+}
+
+#rating-display {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #4f46e5;
+    min-width: 40px;
+}
+
+#mood-rating {
+    flex: 1;
+    height: 8px;
+    background: #f0f0f0;
+    border-radius: 5px;
+    -webkit-appearance: none;
+}
+
+.chart-container {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    margin: 20px 0;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.chart-container h3 {
+    margin-top: 0;
+    color: #333;
+}
+
+#moodChart {
+    max-height: 300px;
+}
+
+.entry-content {
+    white-space: pre-wrap;      /* keeps line breaks, wraps long lines */
+    word-wrap: break-word;      /* older name */
+    overflow-wrap: anywhere;    /* modern fallback for super-long strings */
+    max-width: 100%;
+}

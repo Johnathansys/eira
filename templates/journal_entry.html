@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -25,7 +26,7 @@
 
                 <input type="text" id="title" name="title" placeholder="A Title for Your Entry" required>
 
-                <!-- NEW: Mood selector -->
+                <!-- Mood selector -->
                 <div class="mood-selector">
                     <label style="display:block; margin-top:15px;">How are you feeling?</label>
                     <div class="mood-options">
@@ -36,6 +37,17 @@
                         <button type="button" class="mood-btn" data-mood="angry" aria-label="Angry">😠</button>
                     </div>
                     <input type="hidden" name="mood" id="mood-input">
+                </div>
+
+                <!-- NEW: Mood rating scale -->
+                <div class="mood-rating">
+                    <label style="display:block; margin-top:20px;">How would you rate your mood today? (1-10)</label>
+                    <div class="rating-container">
+                        <span class="rating-label">1</span>
+                        <input type="range" id="mood-rating" name="mood_rating" min="1" max="10" step="0.5" value="5">
+                        <span class="rating-label">10</span>
+                        <span class="rating-value" id="rating-display">5.0</span>
+                    </div>
                 </div>
                 <!-- END NEW -->
 
@@ -52,7 +64,7 @@
         <p>&copy; 2025 Mental Health Hub. All rights reserved.</p>
     </footer>
 
-    <!-- NEW: Mood selector script -->
+    <!-- Mood selector script -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const moodButtons = document.querySelectorAll('.mood-btn');
@@ -66,8 +78,15 @@
                     moodInput.value = btn.dataset.mood;
                 });
             });
+
+            // NEW: Mood rating display
+            const ratingSlider = document.getElementById('mood-rating');
+            const ratingDisplay = document.getElementById('rating-display');
+            ratingSlider.addEventListener('input', function() {
+                ratingDisplay.textContent = this.value;
+            });
+            // END NEW
         });
     </script>
-    <!-- END NEW -->
 </body>
 </html>
