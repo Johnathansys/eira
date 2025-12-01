@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -26,6 +25,20 @@
 
                 <input type="text" id="title" name="title" placeholder="A Title for Your Entry" required>
 
+                <!-- NEW: Mood selector -->
+                <div class="mood-selector">
+                    <label style="display:block; margin-top:15px;">How are you feeling?</label>
+                    <div class="mood-options">
+                        <button type="button" class="mood-btn" data-mood="happy" aria-label="Happy">😊</button>
+                        <button type="button" class="mood-btn" data-mood="calm" aria-label="Calm">😌</button>
+                        <button type="button" class="mood-btn" data-mood="sad" aria-label="Sad">😢</button>
+                        <button type="button" class="mood-btn" data-mood="anxious" aria-label="Anxious">😰</button>
+                        <button type="button" class="mood-btn" data-mood="angry" aria-label="Angry">😠</button>
+                    </div>
+                    <input type="hidden" name="mood" id="mood-input">
+                </div>
+                <!-- END NEW -->
+
                 <label for="content" style="display: block; margin-top: 15px;">What's on your mind today?</label>
                 <textarea id="content" name="content" rows="15" placeholder="Start journaling here..." required></textarea>
 
@@ -38,5 +51,23 @@
     <footer>
         <p>&copy; 2025 Mental Health Hub. All rights reserved.</p>
     </footer>
+
+    <!-- NEW: Mood selector script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const moodButtons = document.querySelectorAll('.mood-btn');
+            const moodInput = document.getElementById('mood-input');
+            if (!moodButtons.length || !moodInput) return;
+
+            moodButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    moodButtons.forEach(b => b.classList.remove('selected'));
+                    btn.classList.add('selected');
+                    moodInput.value = btn.dataset.mood;
+                });
+            });
+        });
+    </script>
+    <!-- END NEW -->
 </body>
 </html>

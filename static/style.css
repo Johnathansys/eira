@@ -293,3 +293,30 @@ footer {
     margin: 0; 
     text-decoration: none;
 }
+
+.mood-selector {
+  margin-top: 15px;
+}
+
+.mood-options {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.mood-btn {
+  font-size: 1.6rem;
+  padding: 4px 8px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background: #f7f7f7;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s, border-color 0.2s;
+}
+
+.mood-btn.selected {
+  background: #4f46e5;
+  color: #fff;
+  border-color: #4f46e5;
+  transform: translateY(-1px);
+}
