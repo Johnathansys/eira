@@ -1,0 +1,46 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/style.css">
+    <title>Eira - Journal Entry</title>
+</head>
+<body>
+    <header>
+        <img src="/static/eiralogo.png" alt="Eira Logo" class="logo">
+        <nav class="navbar">
+            <h1 class="nav-left">Eira!</h1>
+            <div>
+                <a href="/dashboard">Dashboard</a>
+                <a href="/logout">Logout</a>
+            </div>
+        </nav>
+    </header>
+    <div class="main-content">
+        <div class="container single-entry">
+            <h1>{{ entry.title }}</h1>
+            <div class="entry-meta">
+                <span class="date">{{ entry.timestamp }}</span>
+                {% if entry.mood == 'happy' %}
+                    <span class="mood-icon" title="Happy">😊</span>
+                {% elif entry.mood == 'calm' %}
+                    <span class="mood-icon" title="Calm">😌</span>
+                {% elif entry.mood == 'sad' %}
+                    <span class="mood-icon" title="Sad">😢</span>
+                {% elif entry.mood == 'anxious' %}
+                    <span class="mood-icon" title="Anxious">😰</span>
+                {% elif entry.mood == 'angry' %}
+                    <span class="mood-icon" title="Angry">😠</span>
+                {% endif %}
+            </div>
+            <div class="entry-content" style="margin-top: 1.5em;">
+                <p>{{ entry.content | replace('\n', '<br>') | safe }}</p>
+            </div>
+            <a href="/history">Back to History</a>
+        </div>
+    </div>
+    <footer>
+        <p>&copy; 2025 Mental Health Hub. All rights reserved.</p>
+    </footer>
+</body>
+</html>

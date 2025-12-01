@@ -29,12 +29,26 @@
             {% if entries %}
             {% for entry in entries %}
             <li class="intro entry-item">
+                {% if entry.mood == 'happy' %}
+                    <span class="mood-icon">😊</span>
+                {% elif entry.mood == 'calm' %}
+                    <span class="mood-icon">😌</span>
+                {% elif entry.mood == 'sad' %}
+                    <span class="mood-icon">😢</span>
+                {% elif entry.mood == 'anxious' %}
+                    <span class="mood-icon">😰</span>
+                {% elif entry.mood == 'angry' %}
+                    <span class="mood-icon">😠</span>
+                {% endif %}
+
                 <a href="/entry/{{ entry.id }}">{{ entry.title }}</a>
                 <span class="date">{{ entry.timestamp }}</span>
             </li>
             {% endfor %}
             {% else %}
-            <p style="text-align: center; margin-top: 30px; font-size: 1.2rem; color: #6f6c91;">You haven't made any journal entries yet. Time to start!</p>
+            <p style="text-align: center; margin-top: 30px; font-size: 1.2rem; color: #6f6c91;">
+                You haven't made any journal entries yet. Time to start!
+            </p>
             {% endif %}
         </ul>
 
