@@ -11,8 +11,6 @@ app.secret_key = os.environ.get("SECRET_KEY", "a_strong_and_unique_key_for_eira_
 
 DATABASE = "userdata.db"
 
-DATABASE = "userdata.db"
-
 def get_db_connection():
     """Returns a new database connection."""
     conn = sqlite3.connect(DATABASE, check_same_thread=False)
@@ -155,12 +153,11 @@ def calendar_view():
     # 2. Get entries for the current month
     conn = get_db_connection()
     # SQL query to fetch distinct dates that have entries in the current month
-    # We use LIKE to ensure SQLite correctly filters the YYYY-MM prefix
     sql = """
     SELECT DISTINCT strftime('%Y-%m-%d', timestamp) AS entry_date 
     FROM Journal 
     WHERE user_username = ? 
-    AND strftime('%Y-%m', timestamp) LIKE ?
+    AND strftime('%Y-%m', timestamp) = ?
     """
     
     month_filter = f"{current_year}-{current_month:02d}"
