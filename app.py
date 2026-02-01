@@ -314,6 +314,12 @@ def delete_entry(entry_id):
     else:
         return "Error deleting entry or entry not found.", 404
 
+@app.route('/ai_assistant')
+def ai_assistant():
+    if not is_logged_in(): 
+        return redirect(url_for('login'))
+    username = session["Username"]
+    return render_template('ai_assistant.html', username=username)
 
 @app.route("/logout")
 def logout():
