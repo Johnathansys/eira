@@ -381,3 +381,184 @@ footer {
     overflow-wrap: anywhere;    /* modern fallback for super-long strings */
     max-width: 100%;
 }
+
+/* FLASH MESSAGES */
+.flash-message {
+    padding: 15px 20px;
+    margin: 15px 0;
+    border-radius: 8px;
+    font-weight: 500;
+    text-align: center;
+}
+
+.flash-message.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.flash-message.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.flash-message.info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+}
+
+.flash-message.warning {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeaa7;
+}
+
+/* DASHBOARD GRID */
+.dashboard-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin: 30px auto;
+    max-width: 1000px;
+}
+
+.dashboard-link-item {
+    text-decoration: none;
+    padding: 25px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dashboard-link-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+}
+
+/* FORM IMPROVEMENTS */
+form small {
+    display: block;
+    margin-top: -8px;
+    margin-bottom: 10px;
+    color: #6f6c91;
+    font-size: 0.9rem;
+}
+
+/* DANGER BUTTON */
+.danger-btn {
+    background-color: #ff5252 !important;
+}
+
+.danger-btn:hover {
+    background-color: #e53935 !important;
+}
+
+/* RESOURCE CARDS */
+.recommendations-container {
+    max-width: 900px;
+    margin: 30px auto;
+    padding: 25px;
+    background-color: #a3a7df;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.recommendation-card {
+    background: white;
+    padding: 20px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    border-left: 4px solid #00e9e5;
+    transition: transform 0.2s ease;
+}
+
+.recommendation-card:hover {
+    transform: translateX(5px);
+}
+
+.recommendation-card h3 {
+    color: #54507e;
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.recommendation-card p {
+    color: #6f6c91;
+    margin-bottom: 10px;
+}
+
+.recommendation-card a {
+    display: inline-block;
+    margin: 0;
+    padding: 8px 15px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: 600;
+    transition: transform 0.2s;
+}
+
+.recommendation-card a:hover {
+    transform: scale(1.05);
+}
+
+.category-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    background: #ffe23e;
+    color: #130f1a;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+/* CHECK-IN STATUS */
+.checkin-status {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    margin: 20px auto;
+    max-width: 800px;
+    text-align: center;
+    border-left: 4px solid #00e9e5;
+}
+
+/* WARNING BOX */
+.warning-box {
+    background: #fff3cd;
+    border: 2px solid #ffc107;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 0;
+}
+
+.warning-box h3 {
+    color: #856404;
+    margin-top: 0;
+}
+
+.warning-box ul {
+    text-align: left;
+    color: #856404;
+}
+
+/* SUMMARY BOX */
+.summary-box {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.summary-box h2 {
+    color: #54507e;
+    margin-top: 0;
+}
+
+.mood-indicator {
+    font-size: 3rem;
+    margin: 15px 0;
+}

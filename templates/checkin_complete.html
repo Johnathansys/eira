@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/style.css">
+    <title>Eira - Check-In Complete</title>
+    <style>
+        .recommendations-container {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 25px;
+            background-color: #a3a7df;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        .recommendation-card {
+            background: white;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #00e9e5;
+            transition: transform 0.2s ease;
+        }
+        .recommendation-card:hover {
+            transform: translateX(5px);
+        }
+        .recommendation-card h3 {
+            color: #54507e;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+        .recommendation-card p {
+            color: #6f6c91;
+            margin-bottom: 10px;
+        }
+        .recommendation-card a {
+            display: inline-block;
+            margin: 0;
+            padding: 8px 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+        .recommendation-card a:hover {
+            transform: scale(1.05);
+        }
+        .category-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            background: #ffe23e;
+            color: #130f1a;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .summary-box {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .summary-box h2 {
+            color: #54507e;
+            margin-top: 0;
+        }
+        .mood-indicator {
+            font-size: 3rem;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="/static/eiralogo.png" alt="Eira Logo" class="logo">
+        <nav class="navbar">
+            <h1 class="nav-left">Eira!</h1>
+            <div>
+                <a href="/dashboard">Dashboard</a>
+                <a href="/logout">Logout</a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="main-content">
+        <section class="intro">
+            <h2>✅ Check-In Complete!</h2>
+            <p>Thank you for taking a moment to reflect on your wellbeing today.</p>
+        </section>
+
+        <div class="recommendations-container">
+            <div class="summary-box">
+                <h2>Your Summary</h2>
+                <div class="mood-indicator">
+                    {% if mood_rating >= 8 %}
+                        😊
+                    {% elif mood_rating >= 6 %}
+                        😌
+                    {% elif mood_rating >= 4 %}
+                        😐
+                    {% else %}
+                        😢
+                    {% endif %}
+                </div>
+                <p><strong>Mood Rating:</strong> {{ mood_rating }}/10</p>
+                <p><strong>Sleep:</strong> {{ sleep_hours }} hours</p>
+            </div>
+
+            {% if recommendations %}
+                <h2 style="color: #54507e; margin-bottom: 20px;">💡 Recommended Resources for You</h2>
+                <p style="margin-bottom: 20px; color: #6f6c91;">
+                    Based on your check-in, here are some resources that might help:
+                </p>
+
+                {% for resource in recommendations %}
+                    <div class="recommendation-card">
+                        <span class="category-badge">{{ resource.category.replace('_', ' ').title() }}</span>
+                        <h3>{{ resource.title }}</h3>
+                        <p>{{ resource.description }}</p>
+                        <a href="{{ resource.url }}" target="_blank" rel="noopener noreferrer">
+                            Visit Resource →
+                        </a>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="summary-box">
+                    <p>You're doing great! Keep up the good work with your wellbeing journey. 🌟</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <div style="text-align: center; margin: 30px 0;">
+            <a href="/dashboard" style="display: inline-block; padding: 12px 30px; background: #7772b4; color: white; text-decoration: none; border-radius: 8px; font-weight: 600;">
+                Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Eira - Mental Health Companion</p>
+    </footer>
+</body>
+</html>

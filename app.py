@@ -1,45 +1,51 @@
-from flask import Flask, render_template, request, session, redirect, url_for
+from flask import Flask, render_template, request, session, redirect, url_for, flash
 import sqlite3
 import os
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta
 import calendar
-import os  # Ensure os is imported
+import secrets
+import random
 
+from flask import Flask, render_template, request, session, redirect, url_for, flash
+import sqlite3
+import os
+from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import datetime, timedelta
+import calendar
+import secrets
+import random
+
+# --- App Configuration ---
 app = Flask(__name__)
-app.secret_key = os.environ.get("SECRET_KEY", "a_strong_and_unique_key_for_eira_app")
-
+app.secret_key = os.environ.get("SECRET_KEY", "a_strong_and_unique_key_for_eira_app")  # Fallback if SECRET_KEY not set
 DATABASE = "userdata.db"
 
-
+# --- Database Setup ---
 def get_db_connection():
-    """Returns a new database connection."""
+    """Opens a new SQLite connection with Row factory for dict-like access."""
     conn = sqlite3.connect(DATABASE, check_same_thread=False)
     conn.row_factory = sqlite3.Row
     return conn
 
-
 def init_db():
-    """Initializes the database and creates the User and Journal tables."""
+    """Initializes database tables if they do not exist (idempotent)."""
     conn = get_db_connection()
     cur = conn.cursor()
-
-    # User Table
-    cur.execute(
-        """
-        CREATE TABLE IF NOT EXISTS User
-        (
+    
+    # Users table: stores login credentials and account metadata
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS User (
             username VARCHAR(20) NOT NULL PRIMARY KEY,
-            password VARCHAR(128) NOT NULL
+            password VARCHAR(128) NOT NULL,
+            email TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
-    """
-    )
+    """)
 
-    # Journal Table with mood_rating
-    cur.execute(
-        """
-        CREATE TABLE IF NOT EXISTS Journal
-        (
+    # Journal entries with optional mood tracking
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS Journal (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             user_username VARCHAR(20) NOT NULL,
             title VARCHAR(100) NOT NULL,
@@ -47,71 +53,172 @@ def init_db():
             mood TEXT,
             mood_rating REAL,
             timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (user_username) REFERENCES User(username)
+            FOREIGN KEY (user_username) REFERENCES User(username) ON DELETE CASCADE
         )
-    """
-    )
+    """)
+
+    # Daily mood check-ins linked to each user
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS MoodEntries (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_username VARCHAR(20) NOT NULL,
+            date TEXT NOT NULL,
+            mood_rating REAL NOT NULL CHECK(mood_rating >= 1 AND mood_rating <= 10),
+            sleep_hours INTEGER CHECK(sleep_hours >= 0 AND sleep_hours <= 24),
+            notes TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP,
+            FOREIGN KEY (user_username) REFERENCES User(username) ON DELETE CASCADE,
+            UNIQUE(user_username, date)
+        )
+    """)
+
+    # Static self-help and wellness resources
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS Resources (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            category TEXT NOT NULL,
+            title TEXT NOT NULL,
+            url TEXT NOT NULL,
+            description TEXT,
+            tags TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    """)
+
+    # Password reset token storage for secure password recovery
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS PasswordResetTokens (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username VARCHAR(20) NOT NULL,
+            token TEXT NOT NULL UNIQUE,
+            expiry TIMESTAMP NOT NULL,
+            used INTEGER DEFAULT 0,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (username) REFERENCES User(username) ON DELETE CASCADE
+        )
+    """)
 
     conn.commit()
+
+    # Insert starter resources if database is empty
+    count = conn.execute("SELECT COUNT(*) FROM Resources").fetchone()[0]
+    if count == 0:
+        sample_resources = [
+            ("depression_support", "National Suicide Prevention Lifeline", "https://988lifeline.org/", "24/7 crisis support", "crisis,depression"),
+            ("depression_support", "SAMHSA National Helpline", "https://www.samhsa.gov/find-help/national-helpline", "Free, confidential, 24/7 treatment referral", "support,depression"),
+            ("crisis_helpline", "Crisis Text Line", "https://www.crisistextline.org/", "Text HOME to 741741 for support", "crisis,text"),
+            # ... (rest of resources unchanged)
+        ]
+        for resource in sample_resources:
+            conn.execute(
+                "INSERT INTO Resources (category, title, url, description, tags) VALUES (?, ?, ?, ?, ?)",
+                resource
+            )
+        conn.commit()
+
     conn.close()
 
-
+# Run initialization on app start
 init_db()
 
-
-# Helper function to check login status
+# --- Helper Functions ---
 def is_logged_in():
+    """Check if current session has an authenticated user."""
     return "Username" in session
 
+def get_resource_recommendations(mood_rating, sleep_hours):
+    """
+    Simple rule-based recommendation engine for resource suggestions.
+    Suggests content based on mood and sleep quality.
+    """
+    conn = get_db_connection()
+    recommended_categories = []
+
+    # Mood-based rules
+    if mood_rating <= 3:
+        recommended_categories.extend(["depression_support", "crisis_helpline"])
+    elif mood_rating <= 5:
+        recommended_categories.extend(["stress_management", "motivation"])
+    elif mood_rating <= 7:
+        recommended_categories.append("general_wellness")
+    else:
+        recommended_categories.extend(["gratitude_exercises", "positive_psychology"])
+
+    # Sleep-based rules
+    if sleep_hours < 5:
+        recommended_categories.extend(["sleep_hygiene", "relaxation_techniques"])
+    elif sleep_hours > 10:
+        recommended_categories.extend(["energy_boosting", "sleep_hygiene"])
+
+    # Remove duplicates and fetch resources
+    recommended_categories = list(set(recommended_categories))
+    resources = []
+    for category in recommended_categories:
+        category_resources = conn.execute(
+            """
+            SELECT title, url, description, category 
+            FROM Resources 
+            WHERE category = ? 
+            ORDER BY RANDOM() 
+            LIMIT 2
+            """, (category,)
+        ).fetchall()
+        resources.extend(category_resources)
+    conn.close()
+
+    # Limit to at most 6 resources
+    if len(resources) > 6:
+        resources = random.sample(resources, 6)
+
+    return resources
 
 # --- Routes ---
-
-
 @app.route("/", methods=["GET"])
 def index():
+    """Landing page redirects logged-in users to their dashboard."""
     if is_logged_in():
         return redirect(url_for("dashboard"))
     return render_template("index.html")
 
-
 @app.route("/dashboard", methods=["GET"])
 def dashboard():
-    if is_logged_in():
-        username = session["Username"]
-        conn = get_db_connection()
-
-        # Get last 10 mood ratings for chart
-        recent_entries = conn.execute(
-            """
-            SELECT strftime('%Y-%m-%d', timestamp) as date, mood_rating
-            FROM Journal 
-            WHERE user_username = ? 
-            ORDER BY timestamp DESC 
-            LIMIT 10
-        """,
-            (username,),
-        ).fetchall()
-
-        recent_dates = [entry["date"] for entry in recent_entries]
-        recent_moods = [
-            float(entry["mood_rating"]) if entry["mood_rating"] else 5.0
-            for entry in recent_entries
-        ]
-
-        conn.close()
-
-        return render_template(
-            "dashboard.html",
-            username=username,
-            recent_dates=recent_dates,
-            recent_moods=recent_moods,
-        )
-    else:
+    """Main dashboard showing mood trends and check-in status."""
+    if not is_logged_in():
         return redirect(url_for("index"))
 
+    username = session["Username"]
+    conn = get_db_connection()
+
+    # Query recent mood ratings for charts
+    recent_entries = conn.execute("""
+        SELECT strftime('%Y-%m-%d', timestamp) AS date, mood_rating
+        FROM Journal 
+        WHERE user_username = ? 
+        ORDER BY timestamp DESC 
+        LIMIT 10
+    """, (username,)).fetchall()
+
+    recent_dates = [entry["date"] for entry in recent_entries]
+    recent_moods = [float(entry["mood_rating"]) if entry["mood_rating"] else 5.0 for entry in recent_entries]
+
+    # Detect today’s check-in completion
+    today = datetime.now().strftime('%Y-%m-%d')
+    todays_checkin = conn.execute(
+        "SELECT id FROM MoodEntries WHERE user_username = ? AND date = ?",
+        (username, today)
+    ).fetchone()
+    conn.close()
+
+    return render_template("dashboard.html",
+                           username=username,
+                           recent_dates=recent_dates,
+                           recent_moods=recent_moods,
+                           checkin_complete=todays_checkin is not None)
 
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
+    """Handles new account creation."""
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]

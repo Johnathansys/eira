@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/style.css">
+    <title>Eira - Daily Check-In</title>
+</head>
+<body>
+    <header>
+        <img src="/static/eiralogo.png" alt="Eira Logo" class="logo">
+        <nav class="navbar">
+            <h1 class="nav-left">Eira!</h1>
+            <div>
+                <a href="/dashboard">Dashboard</a>
+                <a href="/logout">Logout</a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="main-content">
+        <div class="container">
+            <h1>Daily Mood Check-In</h1>
+            <p style="text-align: center; color: #6f6c91; margin-bottom: 20px;">
+                Take a moment to reflect on how you're feeling today
+            </p>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="flash-message {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST" action="/daily-checkin">
+                <!-- Mood Rating -->
+                <div class="mood-rating">
+                    <label style="display:block; margin-top:20px; font-weight: bold;">
+                        How would you rate your mood today? (1-10)
+                    </label>
+                    <div class="rating-container">
+                        <span class="rating-label">1</span>
+                        <input type="range" id="mood-rating" name="mood_rating" min="1" max="10" step="0.5" 
+                               value="{% if existing_entry %}{{ existing_entry.mood_rating }}{% else %}5{% endif %}">
+                        <span class="rating-label">10</span>
+                        <span class="rating-value" id="rating-display">
+                            {% if existing_entry %}{{ existing_entry.mood_rating }}{% else %}5.0{% endif %}
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Sleep Hours -->
+                <div class="mood-rating" style="margin-top: 30px;">
+                    <label style="display:block; font-weight: bold;">
+                        How many hours did you sleep last night?
+                    </label>
+                    <div class="rating-container">
+                        <span class="rating-label">0</span>
+                        <input type="range" id="sleep-hours" name="sleep_hours" min="0" max="24" step="1" 
+                               value="{% if existing_entry %}{{ existing_entry.sleep_hours }}{% else %}7{% endif %}">
+                        <span class="rating-label">24</span>
+                        <span class="rating-value" id="sleep-display">
+                            {% if existing_entry %}{{ existing_entry.sleep_hours }}{% else %}7{% endif %}
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Optional Notes -->
+                <label for="notes" style="display: block; margin-top: 30px; font-weight: bold;">
+                    Any notes about your day? (Optional)
+                </label>
+                <textarea id="notes" name="notes" rows="5" placeholder="Anything on your mind...">{% if existing_entry %}{{ existing_entry.notes }}{% endif %}</textarea>
+
+                <input type="submit" value="{% if existing_entry %}Update Check-In{% else %}Complete Check-In{% endif %}" class="btn">
+            </form>
+
+            <a href="/dashboard">Back to Dashboard</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Eira - Mental Health Companion</p>
+    </footer>
+
+    <script>
+        // Mood rating display
+        const ratingSlider = document.getElementById('mood-rating');
+        const ratingDisplay = document.getElementById('rating-display');
+        ratingSlider.addEventListener('input', function() {
+            ratingDisplay.textContent = this.value;
+        });
+
+        // Sleep hours display
+        const sleepSlider = document.getElementById('sleep-hours');
+        const sleepDisplay = document.getElementById('sleep-display');
+        sleepSlider.addEventListener('input', function() {
+            sleepDisplay.textContent = this.value + ' hrs';
+        });
+    </script>
+</body>
+</html>

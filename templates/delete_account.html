@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/style.css">
+    <title>Eira - Delete Account</title>
+    <style>
+        .warning-box {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .warning-box h3 {
+            color: #856404;
+            margin-top: 0;
+        }
+        .warning-box ul {
+            text-align: left;
+            color: #856404;
+        }
+        .danger-btn {
+            background-color: #ff5252 !important;
+        }
+        .danger-btn:hover {
+            background-color: #e53935 !important;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="/static/eiralogo.png" alt="Eira Logo" class="logo">
+        <nav class="navbar">
+            <h1 class="nav-left">Eira!</h1>
+            <div>
+                <a href="/dashboard">Dashboard</a>
+                <a href="/logout">Logout</a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="main-content">
+        <div class="container">
+            <h1>Delete Account</h1>
+
+            <div class="warning-box">
+                <h3>⚠️ Warning: This Action Cannot Be Undone</h3>
+                <p>Deleting your account will permanently remove:</p>
+                <ul>
+                    <li>Your user profile and login credentials</li>
+                    <li>All journal entries and mood data</li>
+                    <li>All check-in records and notes</li>
+                    <li>Any saved preferences</li>
+                </ul>
+                <p><strong>This data cannot be recovered once deleted.</strong></p>
+            </div>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="flash-message {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST" action="/delete-account" onsubmit="return confirm('Are you absolutely sure you want to delete your account? This cannot be undone.');">
+                <p style="text-align: center; margin-bottom: 20px;">
+                    Please enter your password to confirm account deletion:
+                </p>
+                <input type="password" name="password" placeholder="Your Password" required>
+                <input type="submit" value="Delete My Account Permanently" class="btn danger-btn">
+            </form>
+
+            <a href="/dashboard">Cancel and Go Back</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Eira - Mental Health Companion</p>
+    </footer>
+</body>
+</html>
