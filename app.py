@@ -423,7 +423,7 @@ def daily_checkin():
     if request.method == "POST":
         mood_rating = float(request.form.get("mood_rating", 5.0))
         sleep_hours = int(request.form.get("sleep_hours", 7))
-        notes = request.form.get("notes", "")
+        notes = request.form.get("content", "")
         
         # Validate inputs
         if not (1 <= mood_rating <= 10):
@@ -447,23 +447,24 @@ def daily_checkin():
             conn.execute(
                 """
                 UPDATE Journal 
-                SET mood_rating = ?, sleep_hours = ?, notes = ?, updated_at = CURRENT_TIMESTAMP
+                SET mood_rating = ?, sleep_hours = ?, content = ?, updated_at = CURRENT_TIMESTAMP
                 WHERE user_username = ? AND timestamp = ?
                 """,
                 (mood_rating, sleep_hours, notes, username, today)
             )
             flash("Check-in updated successfully!", "success")
         else:
-            # Insert new entry
+            # Insert new entry; decide on a title
+            title = "Daily check-in"
             conn.execute(
                 """
-                INSERT INTO Journal (user_username, timestamp, mood_rating, sleep_hours, notes)
-                VALUES (?, ?, ?, ?, ?)
+                INSERT INTO Journal (user_username, timestamp, mood_rating, sleep_hours, content, title)
+                VALUES (?, ?, ?, ?, ?, ?)
                 """,
-                (username, today, mood_rating, sleep_hours, notes)
+                (username, today, mood_rating, sleep_hours, notes, title)
             )
             flash("Check-in saved successfully!", "success")
-        
+            
         conn.commit()
         conn.close()
         
