@@ -33,6 +33,13 @@
                     <span class="mood-icon" title="Angry">😠</span>
                 {% endif %}
             </div>
+            <h2>{{ entry.title }}</h2>
+            <span class="date">
+                Recorded on: {{ entry.timestamp }}
+                {% if entry.mood %} · {{ entry.mood|capitalize }}{% endif %}
+                {% if entry.tags %} · {{ entry.tags.replace(',', ', ') }}{% endif %}
+            </span>
+            <pre>{{ entry.content }}</pre>
             <div class="entry-content" style="margin-top: 1.5em;">
                 <p>{{ entry.content | replace('\n', '<br>') | safe }}</p>
             </div>

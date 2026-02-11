@@ -5,6 +5,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/static/style.css">
     <title>Eira - New Entry</title>
+    <style>
+        /* You can move these into style.css if you prefer */
+
+        .mood-selector, .tags-selector {
+            margin-top: 20px;
+        }
+
+        .mood-options, .tags-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .mood-btn, .tag-btn {
+            border: 1px solid #888;
+            background-color: #f0f0ff;
+            padding: 8px 14px;
+            margin: 0;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.2s, transform 0.1s, border-color 0.2s;
+        }
+
+        .mood-btn.selected, .tag-btn.selected {
+            background-color: #54507e;
+            color: #ffffff;
+            border-color: #303050;
+            transform: translateY(-1px);
+        }
+
+        .word-count {
+            margin-top: 6px;
+            font-size: 0.85rem;
+            color: #555;
+        }
+    </style>
 </head>
 
 <body>
@@ -24,35 +62,54 @@
             <form method="POST" action="/journal_entry">
                 <h1>New Journal Entry</h1>
 
-                <input type="text" id="title" name="title" placeholder="A Title for Your Entry" required>
+                <!-- Title -->
+                <input type="text" id="title" name="title"
+                       placeholder="A Title for Your Entry" required>
 
-                <!-- Mood selector -->
+                <!-- Mood selector (good/bad/etc.) -->
                 <div class="mood-selector">
-                    <label style="display:block; margin-top:15px;">How are you feeling?</label>
+                    <label style="display:block; margin-top:15px;">
+                        How does this story feel?
+                    </label>
                     <div class="mood-options">
-                        <button type="button" class="mood-btn" data-mood="happy" aria-label="Happy">😊</button>
-                        <button type="button" class="mood-btn" data-mood="calm" aria-label="Calm">😌</button>
-                        <button type="button" class="mood-btn" data-mood="sad" aria-label="Sad">😢</button>
-                        <button type="button" class="mood-btn" data-mood="anxious" aria-label="Anxious">😰</button>
-                        <button type="button" class="mood-btn" data-mood="angry" aria-label="Angry">😠</button>
+                        <button type="button" class="mood-btn" data-mood="good">😊 Good</button>
+                        <button type="button" class="mood-btn" data-mood="neutral">😐 Neutral</button>
+                        <button type="button" class="mood-btn" data-mood="bad">😢 Bad</button>
+                        <button type="button" class="mood-btn" data-mood="excited">🤩 Excited</button>
+                        <button type="button" class="mood-btn" data-mood="tired">😴 Tired</button>
                     </div>
+                    <!-- hidden field that will store which mood was chosen -->
                     <input type="hidden" name="mood" id="mood-input">
                 </div>
 
-                <!-- NEW: Mood rating scale -->
-                <div class="mood-rating">
-                    <label style="display:block; margin-top:20px;">How would you rate your mood today? (1-10)</label>
-                    <div class="rating-container">
-                        <span class="rating-label">1</span>
-                        <input type="range" id="mood-rating" name="mood_rating" min="1" max="10" step="0.5" value="5">
-                        <span class="rating-label">10</span>
-                        <span class="rating-value" id="rating-display">5.0</span>
+                <!-- Tags / categories -->
+                <div class="tags-selector">
+                    <label style="display:block; margin-top:15px;">
+                        What is this entry mostly about?
+                    </label>
+                    <div class="tags-options">
+                        <button type="button" class="tag-btn" data-tag="school">School</button>
+                        <button type="button" class="tag-btn" data-tag="friends">Friends</button>
+                        <button type="button" class="tag-btn" data-tag="family">Family</button>
+                        <button type="button" class="tag-btn" data-tag="health">Health</button>
+                        <button type="button" class="tag-btn" data-tag="wins">Wins</button>
+                        <button type="button" class="tag-btn" data-tag="struggles">Struggles</button>
+                        <button type="button" class="tag-btn" data-tag="goals">Goals</button>
+                        <button type="button" class="tag-btn" data-tag="random">Random</button>
                     </div>
+                    <!-- hidden field to store selected tags as comma-separated list -->
+                    <input type="hidden" name="tags" id="tags-input">
                 </div>
-                <!-- END NEW -->
 
-                <label for="content" style="display: block; margin-top: 15px;">What's on your mind today?</label>
-                <textarea id="content" name="content" rows="15" placeholder="Start journaling here..." required></textarea>
+                <!-- Entry text -->
+                <label for="content" style="display: block; margin-top: 15px;">
+                    What's on your mind today?
+                </label>
+                <textarea id="content" name="content" rows="15"
+                          placeholder="Start journaling here..." required></textarea>
+                <div class="word-count">
+                    <span id="word-count">0</span> words
+                </div>
 
                 <input type="submit" value="Save Entry" class="btn">
             </form>
@@ -64,12 +121,11 @@
         <p>&copy; 2025 Mental Health Hub. All rights reserved.</p>
     </footer>
 
-    <!-- Mood selector script -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            // --- Mood selection ---
             const moodButtons = document.querySelectorAll('.mood-btn');
             const moodInput = document.getElementById('mood-input');
-            if (!moodButtons.length || !moodInput) return;
 
             moodButtons.forEach(btn => {
                 btn.addEventListener('click', () => {
@@ -79,13 +135,40 @@
                 });
             });
 
-            // NEW: Mood rating display
-            const ratingSlider = document.getElementById('mood-rating');
-            const ratingDisplay = document.getElementById('rating-display');
-            ratingSlider.addEventListener('input', function() {
-                ratingDisplay.textContent = this.value;
+            // --- Tag selection (multi-select) ---
+            const tagButtons = document.querySelectorAll('.tag-btn');
+            const tagsInput = document.getElementById('tags-input');
+
+            tagButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    btn.classList.toggle('selected');
+
+                    // Collect all selected tags
+                    const selectedTags = Array.from(tagButtons)
+                        .filter(b => b.classList.contains('selected'))
+                        .map(b => b.dataset.tag);
+
+                    // Store as comma-separated string
+                    tagsInput.value = selectedTags.join(',');
+                });
             });
-            // END NEW
+
+            // --- Word count ---
+            const contentArea = document.getElementById('content');
+            const wordCountSpan = document.getElementById('word-count');
+
+            function updateWordCount() {
+                const text = contentArea.value.trim();
+                if (!text) {
+                    wordCountSpan.textContent = '0';
+                    return;
+                }
+                const words = text.split(/\s+/);
+                wordCountSpan.textContent = words.length.toString();
+            }
+
+            contentArea.addEventListener('input', updateWordCount);
+            updateWordCount(); // initial
         });
     </script>
 </body>

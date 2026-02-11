@@ -38,35 +38,17 @@ def init_db():
     # Journal Table with mood_rating
     cur.execute(
         """
-        CREATE TABLE IF NOT EXISTS Journal
-        (
+        CREATE TABLE IF NOT EXISTS Journal (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             user_username VARCHAR(20) NOT NULL,
             title VARCHAR(100) NOT NULL,
             content TEXT NOT NULL,
+            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+            sleep_hours FLOAT,
             mood TEXT,
             mood_rating REAL,
-            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+            tags TEXT,
             FOREIGN KEY (user_username) REFERENCES User(username) ON DELETE CASCADE
-        )
-        """
-    )
-    
-    # MoodEntries Table (for daily check-ins)
-    cur.execute(
-        """
-        CREATE TABLE IF NOT EXISTS MoodEntries
-        (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_username VARCHAR(20) NOT NULL,
-            date TEXT NOT NULL,
-            mood_rating REAL NOT NULL CHECK(mood_rating >= 1 AND mood_rating <= 10),
-            sleep_hours INTEGER CHECK(sleep_hours >= 0 AND sleep_hours <= 24),
-            notes TEXT,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP,
-            FOREIGN KEY (user_username) REFERENCES User(username) ON DELETE CASCADE,
-            UNIQUE(user_username, date)
         )
         """
     )
@@ -237,7 +219,7 @@ def dashboard():
         # Get last 10 mood ratings for chart
         recent_entries = conn.execute(
             """
-            SELECT strftime('%Y-%m-%d', timestamp) as date, mood_rating
+            SELECT strftime('%Y-%m-%d', timestamp) as timestamp, mood_rating
             FROM Journal 
             WHERE user_username = ? 
             ORDER BY timestamp DESC 
@@ -246,7 +228,7 @@ def dashboard():
             (username,),
         ).fetchall()
         
-        recent_dates = [entry["date"] for entry in recent_entries]
+        recent_dates = [entry["timestamp"] for entry in recent_entries]
         recent_moods = [
             float(entry["mood_rating"]) if entry["mood_rating"] else 5.0
             for entry in recent_entries
@@ -255,7 +237,7 @@ def dashboard():
         # Check if user has completed today's check-in
         today = datetime.now().strftime('%Y-%m-%d')
         todays_checkin = conn.execute(
-            "SELECT id FROM MoodEntries WHERE user_username = ? AND date = ?",
+            "SELECT id FROM Journal WHERE user_username = ? AND timestamp = ?",
             (username, today)
         ).fetchone()
         
@@ -283,8 +265,8 @@ def signup():
             flash("Username and password are required", "error")
             return render_template("signup.html")
         
-        if len(password) < 8:
-            flash("Password must be at least 8 characters", "error")
+        if len(password) < 4:
+            flash("Password must be at least 4 characters", "error")
             return render_template("signup.html")
         
         password_hash = generate_password_hash(password)
@@ -456,7 +438,7 @@ def daily_checkin():
         
         # Check if entry already exists for today
         existing = conn.execute(
-            "SELECT id FROM MoodEntries WHERE user_username = ? AND date = ?",
+            "SELECT id FROM Journal WHERE user_username = ? AND timestamp = ?",
             (username, today)
         ).fetchone()
         
@@ -464,9 +446,9 @@ def daily_checkin():
             # Update existing entry
             conn.execute(
                 """
-                UPDATE MoodEntries 
+                UPDATE Journal 
                 SET mood_rating = ?, sleep_hours = ?, notes = ?, updated_at = CURRENT_TIMESTAMP
-                WHERE user_username = ? AND date = ?
+                WHERE user_username = ? AND timestamp = ?
                 """,
                 (mood_rating, sleep_hours, notes, username, today)
             )
@@ -475,7 +457,7 @@ def daily_checkin():
             # Insert new entry
             conn.execute(
                 """
-                INSERT INTO MoodEntries (user_username, date, mood_rating, sleep_hours, notes)
+                INSERT INTO Journal (user_username, timestamp, mood_rating, sleep_hours, notes)
                 VALUES (?, ?, ?, ?, ?)
                 """,
                 (username, today, mood_rating, sleep_hours, notes)
@@ -498,7 +480,7 @@ def daily_checkin():
     # GET request - check if already completed today
     conn = get_db_connection()
     todays_entry = conn.execute(
-        "SELECT mood_rating, sleep_hours, notes FROM MoodEntries WHERE user_username = ? AND date = ?",
+        "SELECT mood_rating, sleep_hours, title FROM Journal WHERE user_username = ? AND timestamp = ?",
         (username, today)
     ).fetchone()
     conn.close()
@@ -602,25 +584,27 @@ def calendar_view():
 
 @app.route("/journal_entry", methods=["GET", "POST"])
 def journal_entry():
+    """Create new journal entry with mood and tags."""
     if not is_logged_in():
         return redirect(url_for("index"))
-    
+
     if request.method == "POST":
         title = request.form.get("title")
         content = request.form.get("content")
-        mood = request.form.get("mood")
-        mood_rating = request.form.get("mood_rating")
+        mood = request.form.get("mood") or None
+        tags = request.form.get("tags") or None  # "school,friends" or empty
         username = session["Username"]
-        
+
         if not title or not content:
             flash("Title and content are required", "error")
             return render_template("journal_entry.html")
-        
+
         conn = get_db_connection()
         try:
             conn.execute(
-                "INSERT INTO Journal (user_username, title, content, mood, mood_rating) VALUES (?, ?, ?, ?, ?)",
-                (username, title, content, mood, mood_rating),
+                "INSERT INTO Journal (user_username, title, content, mood, tags) "
+                "VALUES (?, ?, ?, ?, ?)",
+                (username, title, content, mood, tags),
             )
             conn.commit()
             flash("Journal entry saved successfully!", "success")
@@ -631,7 +615,7 @@ def journal_entry():
             return render_template("journal_entry.html")
         finally:
             conn.close()
-    
+
     return render_template("journal_entry.html")
 
 
@@ -641,7 +625,7 @@ def history():
         return redirect(url_for("index"))
     
     username = session["Username"]
-    date_filter = request.args.get("date")
+    date_filter = request.args.get("timestamp")
     
     conn = get_db_connection()
     if date_filter:
