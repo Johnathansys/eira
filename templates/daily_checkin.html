@@ -3,100 +3,154 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/static/style.css">
-    <title>Eira - Daily Check-In</title>
+    <link rel="stylesheet" href="/static/style_redesigned.css">
+    <title>Daily Check-In - Eira</title>
 </head>
-<body>
-    <header>
-        <img src="/static/eiralogo.png" alt="Eira Logo" class="logo">
-        <nav class="navbar">
-            <h1 class="nav-left">Eira!</h1>
-            <div>
-                <a href="/dashboard">Dashboard</a>
-                <a href="/logout">Logout</a>
-            </div>
-        </nav>
-    </header>
-
-    <div class="main-content">
-        <div class="container">
-            <h1>Daily Mood Check-In</h1>
-            <p style="text-align: center; color: #6f6c91; margin-bottom: 20px;">
-                Take a moment to reflect on how you're feeling today
-            </p>
-
-            {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    {% for category, message in messages %}
-                        <div class="flash-message {{ category }}">{{ message }}</div>
-                    {% endfor %}
-                {% endif %}
-            {% endwith %}
-
-            <form method="POST" action="/daily-checkin">
-                <!-- Mood Rating -->
-                <div class="mood-rating">
-                    <label style="display:block; margin-top:20px; font-weight: bold;">
-                        How would you rate your mood today? (1-10)
-                    </label>
-                    <div class="rating-container">
-                        <span class="rating-label">1</span>
-                        <input type="range" id="mood-rating" name="mood_rating" min="1" max="10" step="0.5" 
-                               value="{% if existing_entry %}{{ existing_entry.mood_rating }}{% else %}5{% endif %}">
-                        <span class="rating-label">10</span>
-                        <span class="rating-value" id="rating-display">
-                            {% if existing_entry %}{{ existing_entry.mood_rating }}{% else %}5.0{% endif %}
-                        </span>
-                    </div>
-                </div>
-
-                <!-- Sleep Hours -->
-                <div class="mood-rating" style="margin-top: 30px;">
-                    <label style="display:block; font-weight: bold;">
-                        How many hours did you sleep last night?
-                    </label>
-                    <div class="rating-container">
-                        <span class="rating-label">0</span>
-                        <input type="range" id="sleep-hours" name="sleep_hours" min="0" max="24" step="1" 
-                               value="{% if existing_entry %}{{ existing_entry.sleep_hours }}{% else %}7{% endif %}">
-                        <span class="rating-label">24</span>
-                        <span class="rating-value" id="sleep-display">
-                            {% if existing_entry %}{{ existing_entry.sleep_hours }}{% else %}7{% endif %}
-                        </span>
-                    </div>
-                </div>
-
-                <!-- Optional Notes -->
-                <label for="notes" style="display: block; margin-top: 30px; font-weight: bold;">
-                    Any notes about your day? (Optional)
-                </label>
-                <textarea id="notes" name="notes" rows="5" placeholder="Anything on your mind...">{% if existing_entry %}{{ existing_entry.notes }}{% endif %}</textarea>
-
-                <input type="submit" value="{% if existing_entry %}Update Check-In{% else %}Complete Check-In{% endif %}" class="btn">
-            </form>
-
-            <a href="/dashboard">Back to Dashboard</a>
+<body class="checkin-page">
+    <!-- TOP BAR -->
+    <div class="checkin-topbar">
+        <a href="/dashboard" class="btn-back">← Back</a>
+        <div class="checkin-actions">
+            <a href="/dashboard" class="btn-cancel">Cancel</a>
+            <button type="submit" form="checkinForm" class="btn-save">Save Check-In</button>
         </div>
     </div>
 
-    <footer>
-        <p>&copy; 2026 Eira - Mental Health Companion</p>
-    </footer>
+    <!-- CHECKIN FORM -->
+    <div class="checkin-container">
+        <h1 class="checkin-title">Daily Check-In</h1>
+        <p class="checkin-subtitle">Take a moment to reflect on how you're feeling today</p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="/daily-checkin" id="checkinForm">
+            <!-- Mood Rating -->
+            <div class="form-section">
+                <label class="form-label">
+                    How would you rate your mood today?
+                    <span class="mood-value-display" id="mood-display">
+                        {% if existing_entry %}{{ existing_entry.mood_rating }}{% else %}5.0{% endif %}
+                    </span>/10
+                </label>
+                
+                <div class="slider-container">
+                    <span class="slider-min">😢 1</span>
+                    <input 
+                        type="range" 
+                        name="mood_rating" 
+                        id="mood-rating-slider" 
+                        min="1" 
+                        max="10" 
+                        step="0.5" 
+                        value="{% if existing_entry %}{{ existing_entry.mood_rating }}{% else %}5{% endif %}"
+                        class="mood-slider"
+                    >
+                    <span class="slider-max">😊 10</span>
+                </div>
+
+                <div class="mood-scale-labels">
+                    <span class="scale-label">Very Low</span>
+                    <span class="scale-label">Low</span>
+                    <span class="scale-label">Neutral</span>
+                    <span class="scale-label">Good</span>
+                    <span class="scale-label">Excellent</span>
+                </div>
+            </div>
+
+            <!-- Sleep Hours -->
+            <div class="form-section">
+                <label class="form-label">
+                    How many hours did you sleep last night?
+                    <span class="mood-value-display" id="sleep-display">
+                        {% if existing_entry %}{{ existing_entry.sleep_hours }}{% else %}7{% endif %}
+                    </span> hours
+                </label>
+                
+                <div class="slider-container">
+                    <span class="slider-min">😴 0</span>
+                    <input 
+                        type="range" 
+                        name="sleep_hours" 
+                        id="sleep-hours-slider" 
+                        min="0" 
+                        max="24" 
+                        step="1" 
+                        value="{% if existing_entry %}{{ existing_entry.sleep_hours }}{% else %}7{% endif %}"
+                        class="mood-slider"
+                    >
+                    <span class="slider-max">😌 24</span>
+                </div>
+
+                <div class="sleep-quality-indicators">
+                    <div class="quality-indicator" id="sleep-quality">
+                        <span class="quality-icon">💤</span>
+                        <span class="quality-text" id="sleep-quality-text">Good sleep</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Optional Notes -->
+            <div class="form-section">
+                <label class="form-label">Any notes about your day? (Optional)</label>
+                <textarea 
+                    name="notes" 
+                    rows="6" 
+                    placeholder="What's affecting your mood today? Any thoughts you'd like to capture..."
+                    class="journal-textarea"
+                >{% if existing_entry %}{{ existing_entry.notes }}{% endif %}</textarea>
+            </div>
+        </form>
+
+        <div class="checkin-info-box">
+            <span class="info-icon">💡</span>
+            <p>Regular check-ins help you track patterns in your mood and wellbeing over time.</p>
+        </div>
+    </div>
 
     <script>
-        // Mood rating display
-        const ratingSlider = document.getElementById('mood-rating');
-        const ratingDisplay = document.getElementById('rating-display');
-        ratingSlider.addEventListener('input', function() {
-            ratingDisplay.textContent = this.value;
+        // Mood rating slider
+        const moodSlider = document.getElementById('mood-rating-slider');
+        const moodDisplay = document.getElementById('mood-display');
+
+        moodSlider.addEventListener('input', function() {
+            moodDisplay.textContent = this.value;
         });
 
-        // Sleep hours display
-        const sleepSlider = document.getElementById('sleep-hours');
+        // Sleep hours slider
+        const sleepSlider = document.getElementById('sleep-hours-slider');
         const sleepDisplay = document.getElementById('sleep-display');
+        const sleepQualityText = document.getElementById('sleep-quality-text');
+
+        function updateSleepQuality(hours) {
+            sleepDisplay.textContent = hours;
+            
+            if (hours < 4) {
+                sleepQualityText.textContent = 'Very poor sleep - Consider rest';
+            } else if (hours < 6) {
+                sleepQualityText.textContent = 'Poor sleep - Try to rest more';
+            } else if (hours < 7) {
+                sleepQualityText.textContent = 'Below optimal - Aim for more';
+            } else if (hours <= 9) {
+                sleepQualityText.textContent = 'Good sleep - Keep it up!';
+            } else if (hours <= 11) {
+                sleepQualityText.textContent = 'Long sleep - Normal recovery';
+            } else {
+                sleepQualityText.textContent = 'Very long sleep - Check wellbeing';
+            }
+        }
+
         sleepSlider.addEventListener('input', function() {
-            sleepDisplay.textContent = this.value + ' hrs';
+            updateSleepQuality(parseInt(this.value));
         });
+
+        // Initialize on load
+        updateSleepQuality(parseInt(sleepSlider.value));
     </script>
 </body>
 </html>

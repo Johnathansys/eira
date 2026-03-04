@@ -1,53 +1,69 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/static/style.css">
-    <title>Eira - Journal Entry</title>
+    <link rel="stylesheet" href="/static/style_redesigned.css">
+    <title>{{ entry.title }} - Eira</title>
 </head>
-<body>
-    <header>
-        <img src="/static/eiralogo.png" alt="Eira Logo" class="logo">
-        <nav class="navbar">
-            <h1 class="nav-left">Eira!</h1>
-            <div>
-                <a href="/dashboard">Dashboard</a>
-                <a href="/logout">Logout</a>
-            </div>
-        </nav>
-    </header>
-    <div class="main-content">
-        <div class="container single-entry">
-            <h1>{{ entry.title }}</h1>
-            <div class="entry-meta">
-                <span class="date">{{ entry.timestamp }}</span>
-                {% if entry.mood == 'happy' %}
-                    <span class="mood-icon" title="Happy">😊</span>
-                {% elif entry.mood == 'calm' %}
-                    <span class="mood-icon" title="Calm">😌</span>
-                {% elif entry.mood == 'sad' %}
-                    <span class="mood-icon" title="Sad">😢</span>
-                {% elif entry.mood == 'anxious' %}
-                    <span class="mood-icon" title="Anxious">😰</span>
-                {% elif entry.mood == 'angry' %}
-                    <span class="mood-icon" title="Angry">😠</span>
-                {% endif %}
-            </div>
-            <h2>{{ entry.title }}</h2>
-            <span class="date">
-                Recorded on: {{ entry.timestamp }}
-                {% if entry.mood %} · {{ entry.mood|capitalize }}{% endif %}
-                {% if entry.tags %} · {{ entry.tags.replace(',', ', ') }}{% endif %}
-            </span>
-            <pre>{{ entry.content }}</pre>
-            <div class="entry-content" style="margin-top: 1.5em;">
-                <p>{{ entry.content | replace('\n', '<br>') | safe }}</p>
-            </div>
-            <a href="/history">Back to History</a>
+<body class="view-entry-page">
+    <!-- TOP BAR -->
+    <div class="entry-topbar">
+        <a href="/history" class="btn-back-simple">← Back to History</a>
+        <div class="entry-actions">
+            <form method="POST" action="/delete/{{ entry.id }}" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this entry?');">
+                <button type="submit" class="btn-delete-entry">Delete</button>
+            </form>
         </div>
     </div>
-    <footer>
-        <p>&copy; 2025 Mental Health Hub. All rights reserved.</p>
-    </footer>
+
+    <!-- ENTRY CONTAINER -->
+    <div class="entry-view-container">
+        <!-- Entry Header -->
+        <div class="entry-view-header">
+            <div class="entry-mood-badge">
+                {% if entry.mood == 'happy' or entry.mood == 'good' %}
+                    <span class="mood-emoji">😊</span>
+                {% elif entry.mood == 'calm' or entry.mood == 'neutral' %}
+                    <span class="mood-emoji">😌</span>
+                {% elif entry.mood == 'sad' or entry.mood == 'bad' %}
+                    <span class="mood-emoji">😢</span>
+                {% elif entry.mood == 'anxious' %}
+                    <span class="mood-emoji">😰</span>
+                {% elif entry.mood == 'angry' %}
+                    <span class="mood-emoji">😠</span>
+                {% elif entry.mood == 'excited' %}
+                    <span class="mood-emoji">😁</span>
+                {% elif entry.mood == 'tired' %}
+                    <span class="mood-emoji">😴</span>
+                {% else %}
+                    <span class="mood-emoji">📝</span>
+                {% endif %}
+                {% if entry.mood %}
+                    <span class="mood-label">{{ entry.mood.capitalize() }}</span>
+                {% endif %}
+            </div>
+
+            <h1 class="entry-view-title">{{ entry.title }}</h1>
+            
+            <div class="entry-meta-info">
+                <span class="entry-date">{{ entry.timestamp }}</span>
+                {% if entry.mood_rating %}
+                    <span class="entry-rating-badge">Mood: {{ entry.mood_rating }}/10</span>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Entry Content -->
+        <div class="entry-view-content">
+            <p>{{ entry.content | replace('\n', '<br>') | safe }}</p>
+        </div>
+
+        <!-- Entry Footer Actions -->
+        <div class="entry-view-footer">
+            <a href="/history" class="btn-secondary">Back to History</a>
+            <a href="/journal_entry" class="btn-primary">Write New Entry</a>
+        </div>
+    </div>
 </body>
 </html>
