@@ -233,7 +233,25 @@ def dashboard():
             float(entry["mood_rating"]) if entry["mood_rating"] else 5.0
             for entry in recent_entries
         ]
-        
+
+        # NEW: get the most recent mood rating for "current mood"
+        latest_entry = conn.execute(
+            """
+            SELECT mood_rating
+            FROM Journal
+            WHERE user_username = ?
+            ORDER BY timestamp DESC
+            LIMIT 1
+            """,
+            (username,)
+        ).fetchone()
+
+        if latest_entry and latest_entry["mood_rating"] is not None:
+            current_mood = float(latest_entry["mood_rating"])
+        else:
+            # Fallback if no entries exist yet
+            current_mood = None  # or 5.0 as a neutral default
+
         # Check if user has completed today's check-in
         today = datetime.now().strftime('%Y-%m-%d')
         todays_checkin = conn.execute(
@@ -248,7 +266,8 @@ def dashboard():
             username=username,
             recent_dates=recent_dates,
             recent_moods=recent_moods,
-            checkin_complete=todays_checkin is not None
+            checkin_complete=todays_checkin is not None,
+            current_mood=current_mood,      # ⬅ pass to template
         )
     else:
         return redirect(url_for("index"))

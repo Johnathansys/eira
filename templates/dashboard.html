@@ -62,7 +62,11 @@
             <!-- Current Mood Display -->
             <div class="current-mood-box">
                 <p class="mood-label">Your Current Mood:</p>
-                <p class="mood-value">/10</p>
+                {% if current_mood is not none %}
+                    <p class="mood-value">{{ current_mood }}/10</p>
+                {% else %}
+                    <p class="mood-value">No mood data yet</p>
+                {% endif %}
             </div>
         </aside>
     </div>
