@@ -3,142 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="/static/style_redesigned.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <title>Eira - Dashboard</title>
-    <style>
-        .dashboard-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin: 30px auto;
-            max-width: 1000px;
-        }
-        .dashboard-link-item {
-            padding: 25px;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        .dashboard-link-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-        }
-        .checkin-status {
-            background: white;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 20px auto;
-            max-width: 800px;
-            text-align: center;
-            border-left: 4px solid #00e9e5;
-        }
-    </style>
+    <title>Dashboard - Eira</title>
 </head>
-<body>
-    <header>
-        <img src="/static/eiralogo.png" alt="Eira Logo" class="logo">
-        <nav class="navbar">
-            <h1 class="nav-left">Eira!</h1>
-            <div>
-                <a href="/dashboard">Dashboard</a>
-                <a href="/logout">Logout</a>
-            </div>
-        </nav>
-    </header>
-
-    <div class="main-content">
-        <section class="intro">
-            <h2>Welcome back, <span style="color: #00e9e5; font-weight: 700;">{{ username }}</span>!</h2>
-            <p>Ready to reflect and grow? Here's your personal hub.</p>
-        </section>
-
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="flash-message {{ category }}">{{ message }}</div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-
-        <!-- Daily Check-In Status -->
-        <div class="checkin-status">
-            {% if checkin_complete %}
-                <p style="color: #28a745; font-weight: 600;">✅ You've completed today's check-in!</p>
-                <small style="color: #6f6c91;">Come back tomorrow for your next check-in</small>
-            {% else %}
-                <p style="color: #ffc107; font-weight: 600;">📊 Don't forget your daily check-in!</p>
-                <a href="/daily-checkin" style="display: inline-block; margin-top: 10px; padding: 10px 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-decoration: none; border-radius: 5px; font-weight: 600;">
-                    Complete Check-In →
-                </a>
-            {% endif %}
+<body class="dashboard-page">
+    <!-- TOP BAR -->
+    <div class="dashboard-topbar">
+        <div class="dashboard-logo-section">
+            <img src="/static/eiralogo.png" alt="Eira Logo" class="dashboard-logo">
+            <span class="dashboard-logo-text">EIRA</span>
         </div>
-
-        <!-- Mood trend chart -->
-        <div class="chart-container">
-            <h3>🧠 Your Mood Over Time</h3>
-            <canvas id="moodChart"></canvas>
-        </div>
-
-        <div class="dashboard-container">
-            <a href="/daily-checkin" class="intro dashboard-link-item">
-                <h3>📊 Daily Check-In</h3>
-                <p>Track your mood and get personalized resources</p>
-            </a>
-
-            <a href="/journal_entry" class="intro dashboard-link-item">
-                <h3>✍️ New Journal Entry</h3>
-                <p>Start writing down your thoughts and feelings.</p>
-            </a>
-
-            <a href="/history" class="intro dashboard-link-item">
-                <h3>📖 Journal History</h3>
-                <p>Review and reflect on past entries.</p>
-            </a>
-
-            <a href="/calendar" class="intro dashboard-link-item">
-                <h3>🗓️ Calendar View</h3>
-                <p>Visualize your progress over time.</p>
-            </a>
-
-            <a href="{{ url_for('ai_assistant') }}" class="intro dashboard-link-item">
-                <h3>🤖 AI Assistant</h3>
-                <p>Get instant mental health support & tips</p>
-            </a>
-
-            <a href="/delete-account" class="intro dashboard-link-item" style="border-left: 4px solid #ff5252;">
-                <h3>⚙️ Account Settings</h3>
-                <p>Manage your account or delete data</p>
-            </a>
+        <div class="dashboard-nav">
+            <a href="#contact" class="nav-link">Contacts</a>
+            <a href="/logout" class="nav-link">Sign Out</a>
         </div>
     </div>
 
-    <footer>
-        <p>&copy; 2025 Mental Health Hub. All rights reserved.</p>
-    </footer>
+    <div class="dashboard-content">
+        <!-- MAIN AREA: Welcome + Chart -->
+        <div class="dashboard-main">
+            <div class="dashboard-welcome">
+                <h1>Hello, {{ username }}</h1>
+                <p class="welcome-subtitle">How are you feeling today?</p>
+            </div>
 
-    <!-- Chart.js script -->
+            <!-- Mood Chart -->
+            <div class="mood-chart-container">
+                <h3 class="chart-title">📈 Your mood over time</h3>
+                <canvas id="moodChart"></canvas>
+            </div>
+        </div>
+
+        <!-- SIDEBAR: Quick Actions -->
+        <aside class="dashboard-sidebar">
+            <h2 class="sidebar-title">Quick Actions</h2>
+            
+            <a href="/journal_entry" class="quick-action-btn">
+                New Journal Entry
+            </a>
+            
+            <a href="/history" class="quick-action-btn">
+                Journal History
+            </a>
+            
+            <a href="/calendar" class="quick-action-btn">
+                Calendar View
+            </a>
+            
+            <a href="/ai_assistant" class="quick-action-btn">
+                AI Assistant
+            </a>
+            
+            <a href="/delete-account" class="quick-action-btn">
+                Account Settings
+            </a>
+
+            <!-- Current Mood Display -->
+            <div class="current-mood-box">
+                <p class="mood-label">Your Current Mood:</p>
+                <p class="mood-value">9/10</p>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Chart.js Script -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const ctx = document.getElementById('moodChart').getContext('2d');
+            
+            // Sample data (replace with real data from backend)
+            const dates = {{ recent_dates | tojson | safe }};
+            const moods = {{ recent_moods | tojson | safe }};
+            
             const moodChart = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: {{ recent_dates | tojson }},
+                    labels: dates.reverse(),
                     datasets: [{
                         label: 'Mood Rating',
-                        data: {{ recent_moods | tojson }},
-                        borderColor: '#00e9e5',
-                        backgroundColor: 'rgba(0, 233, 229, 0.1)',
+                        data: moods.reverse(),
+                        borderColor: '#7B68EE',
+                        backgroundColor: 'rgba(123, 104, 238, 0.1)',
                         tension: 0.4,
-                        fill: true
+                        fill: true,
+                        pointRadius: 4,
+                        pointHoverRadius: 6
                     }]
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
                     scales: {
                         y: {
-                            beginAtZero: true,
+                            beginAtZero: false,
+                            min: 0,
                             max: 10,
-                            ticks: { stepSize: 1 }
+                            ticks: { 
+                                stepSize: 2,
+                                color: '#333'
+                            },
+                            grid: {
+                                color: '#E5E5E5'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#666',
+                                maxRotation: 45,
+                                minRotation: 45
+                            },
+                            grid: {
+                                display: false
+                            }
                         }
                     }
                 }

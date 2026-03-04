@@ -3,172 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/static/style.css">
-    <title>Eira - New Entry</title>
-    <style>
-        /* You can move these into style.css if you prefer */
-
-        .mood-selector, .tags-selector {
-            margin-top: 20px;
-        }
-
-        .mood-options, .tags-options {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 10px;
-        }
-
-        .mood-btn, .tag-btn {
-            border: 1px solid #888;
-            background-color: #f0f0ff;
-            padding: 8px 14px;
-            margin: 0;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: background-color 0.2s, transform 0.1s, border-color 0.2s;
-        }
-
-        .mood-btn.selected, .tag-btn.selected {
-            background-color: #54507e;
-            color: #ffffff;
-            border-color: #303050;
-            transform: translateY(-1px);
-        }
-
-        .word-count {
-            margin-top: 6px;
-            font-size: 0.85rem;
-            color: #555;
-        }
-    </style>
+    <link rel="stylesheet" href="/static/style_redesigned.css">
+    <title>New Journal Entry - Eira</title>
 </head>
-
-<body>
-    <header>
-        <img src="/static/eiralogo.png" alt="Eira Logo" class="logo">
-        <nav class="navbar">
-            <h1 class="nav-left">Eira!</h1>
-            <div>
-                <a href="/dashboard">Dashboard</a>
-                <a href="/logout">Logout</a>
-            </div>
-        </nav>
-    </header>
-
-    <div class="main-content">
-        <div class="container">
-            <form method="POST" action="/journal_entry">
-                <h1>New Journal Entry</h1>
-
-                <!-- Title -->
-                <input type="text" id="title" name="title"
-                       placeholder="A Title for Your Entry" required>
-
-                <!-- Mood selector (good/bad/etc.) -->
-                <div class="mood-selector">
-                    <label style="display:block; margin-top:15px;">
-                        How does this story feel?
-                    </label>
-                    <div class="mood-options">
-                        <button type="button" class="mood-btn" data-mood="good">😊 Good</button>
-                        <button type="button" class="mood-btn" data-mood="neutral">😐 Neutral</button>
-                        <button type="button" class="mood-btn" data-mood="bad">😢 Bad</button>
-                        <button type="button" class="mood-btn" data-mood="excited">🤩 Excited</button>
-                        <button type="button" class="mood-btn" data-mood="tired">😴 Tired</button>
-                    </div>
-                    <!-- hidden field that will store which mood was chosen -->
-                    <input type="hidden" name="mood" id="mood-input">
-                </div>
-
-                <!-- Tags / categories -->
-                <div class="tags-selector">
-                    <label style="display:block; margin-top:15px;">
-                        What is this entry mostly about?
-                    </label>
-                    <div class="tags-options">
-                        <button type="button" class="tag-btn" data-tag="school">School</button>
-                        <button type="button" class="tag-btn" data-tag="friends">Friends</button>
-                        <button type="button" class="tag-btn" data-tag="family">Family</button>
-                        <button type="button" class="tag-btn" data-tag="health">Health</button>
-                        <button type="button" class="tag-btn" data-tag="wins">Wins</button>
-                        <button type="button" class="tag-btn" data-tag="struggles">Struggles</button>
-                        <button type="button" class="tag-btn" data-tag="goals">Goals</button>
-                        <button type="button" class="tag-btn" data-tag="random">Random</button>
-                    </div>
-                    <!-- hidden field to store selected tags as comma-separated list -->
-                    <input type="hidden" name="tags" id="tags-input">
-                </div>
-
-                <!-- Entry text -->
-                <label for="content" style="display: block; margin-top: 15px;">
-                    What's on your mind today?
-                </label>
-                <textarea id="content" name="content" rows="15"
-                          placeholder="Start journaling here..." required></textarea>
-                <div class="word-count">
-                    <span id="word-count">0</span> words
-                </div>
-
-                <input type="submit" value="Save Entry" class="btn">
-            </form>
-            <a href="/dashboard">Back to Dashboard</a>
+<body class="journal-entry-page">
+    <!-- TOP ACTION BAR -->
+    <div class="journal-topbar">
+        <a href="/dashboard" class="btn-back">Back</a>
+        <div class="journal-actions">
+            <a href="/dashboard" class="btn-cancel">Cancel</a>
+            <button type="submit" form="journalForm" class="btn-save">Save</button>
         </div>
     </div>
 
-    <footer>
-        <p>&copy; 2025 Mental Health Hub. All rights reserved.</p>
-    </footer>
+    <!-- JOURNAL FORM -->
+    <div class="journal-container">
+        <h1 class="journal-title">New Journal Entry</h1>
+        <p class="journal-subtitle">Take a moment to reflect on your day.</p>
+
+        <form method="POST" action="/journal_entry" id="journalForm">
+            <!-- Title Input -->
+            <div class="form-section">
+                <label class="form-label">Title</label>
+                <input type="text" name="title" placeholder="Give your entry a title..." required class="journal-input-title">
+            </div>
+
+            <!-- How does this story feel? -->
+            <div class="form-section">
+                <label class="form-label">How does this story feel?</label>
+                <div class="mood-pills-container">
+                    <button type="button" class="mood-pill" data-mood="excited">😁 Excited</button>
+                    <button type="button" class="mood-pill" data-mood="good">😊 Good</button>
+                    <button type="button" class="mood-pill" data-mood="neutral">😐 Neutral</button>
+                    <button type="button" class="mood-pill" data-mood="bad">😔 Bad</button>
+                    <button type="button" class="mood-pill" data-mood="tired">😴 Tired</button>
+                </div>
+                <input type="hidden" name="mood" id="mood-input">
+            </div>
+
+            <!-- What is this entry mostly about? -->
+            <div class="form-section">
+                <label class="form-label">What is this entry mostly about?</label>
+                <div class="topic-pills-container">
+                    <button type="button" class="topic-pill">School</button>
+                    <button type="button" class="topic-pill">Family</button>
+                    <button type="button" class="topic-pill">Wins</button>
+                    <button type="button" class="topic-pill">Goals</button>
+                    <button type="button" class="topic-pill">Friends</button>
+                    <button type="button" class="topic-pill">Health</button>
+                    <button type="button" class="topic-pill">Struggles</button>
+                    <button type="button" class="topic-pill">Random</button>
+                </div>
+            </div>
+
+            <!-- Mood Rating Slider -->
+            <div class="form-section">
+                <label class="form-label">How are you feeling? <span id="mood-rating-display">5</span>/10</label>
+                <input type="range" name="mood_rating" id="mood-rating-slider" min="1" max="10" step="0.5" value="5" class="mood-slider">
+            </div>
+
+            <!-- Content Textarea -->
+            <div class="form-section">
+                <label class="form-label">What's on your mind?</label>
+                <textarea name="content" rows="12" placeholder="Start writing..." required class="journal-textarea"></textarea>
+            </div>
+        </form>
+    </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // --- Mood selection ---
-            const moodButtons = document.querySelectorAll('.mood-btn');
-            const moodInput = document.getElementById('mood-input');
+        // Mood pill selection
+        const moodPills = document.querySelectorAll('.mood-pill');
+        const moodInput = document.getElementById('mood-input');
 
-            moodButtons.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    moodButtons.forEach(b => b.classList.remove('selected'));
-                    btn.classList.add('selected');
-                    moodInput.value = btn.dataset.mood;
-                });
+        moodPills.forEach(pill => {
+            pill.addEventListener('click', function() {
+                moodPills.forEach(p => p.classList.remove('selected'));
+                this.classList.add('selected');
+                moodInput.value = this.dataset.mood;
             });
+        });
 
-            // --- Tag selection (multi-select) ---
-            const tagButtons = document.querySelectorAll('.tag-btn');
-            const tagsInput = document.getElementById('tags-input');
-
-            tagButtons.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    btn.classList.toggle('selected');
-
-                    // Collect all selected tags
-                    const selectedTags = Array.from(tagButtons)
-                        .filter(b => b.classList.contains('selected'))
-                        .map(b => b.dataset.tag);
-
-                    // Store as comma-separated string
-                    tagsInput.value = selectedTags.join(',');
-                });
+        // Topic pill toggle (multiple selection)
+        const topicPills = document.querySelectorAll('.topic-pill');
+        topicPills.forEach(pill => {
+            pill.addEventListener('click', function() {
+                this.classList.toggle('selected');
             });
+        });
 
-            // --- Word count ---
-            const contentArea = document.getElementById('content');
-            const wordCountSpan = document.getElementById('word-count');
+        // Mood rating slider display
+        const moodSlider = document.getElementById('mood-rating-slider');
+        const moodDisplay = document.getElementById('mood-rating-display');
 
-            function updateWordCount() {
-                const text = contentArea.value.trim();
-                if (!text) {
-                    wordCountSpan.textContent = '0';
-                    return;
-                }
-                const words = text.split(/\s+/);
-                wordCountSpan.textContent = words.length.toString();
-            }
-
-            contentArea.addEventListener('input', updateWordCount);
-            updateWordCount(); // initial
+        moodSlider.addEventListener('input', function() {
+            moodDisplay.textContent = this.value;
         });
     </script>
 </body>

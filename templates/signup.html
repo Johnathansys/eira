@@ -3,26 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/static/style.css">
-    <title>Mental Health Hub - Sign Up</title>
+    <link rel="stylesheet" href="/static/style_redesigned.css">
+    <title>Sign Up - Eira</title>
 </head>
-<body>
-    <header>
-        <img src="/static/eiralogo.png" alt="Eira Logo" class="logo">
-        <nav class="navbar">
-            <h1 class="nav-left">Eira!</h1>
-            <div>
-                <a href="/">Home</a>
-                <a href="/signup">Sign Up</a>
-                <a href="/login">Login</a>
+<body class="auth-page">
+    <div class="auth-container">
+        <!-- LEFT SIDE: Branding -->
+        <div class="auth-left">
+            <div class="auth-branding">
+                <h2 class="auth-welcome">Welcome to Eira!</h2>
+                <p class="auth-tagline">A website to use to journal your<br><span class="highlight-text">personal growth</span></p>
+                
+                <div class="auth-logo-box">
+                    <img src="/static/eiralogo.png" alt="Eira Logo" class="auth-logo">
+                    <div class="auth-logo-text">EIRA</div>
+                </div>
             </div>
-        </nav>
-    </header>
+        </div>
 
-    <div class="main-content">
-        <div class="container">
-            <form method="post" action="/signup">
-                <h1>Sign Up</h1>
+        <!-- RIGHT SIDE: Signup Form -->
+        <div class="auth-right">
+            <div class="auth-form-container">
+                <h1 class="form-title">Create Account</h1>
 
                 {% with messages = get_flashed_messages(with_categories=true) %}
                     {% if messages %}
@@ -32,27 +34,31 @@
                     {% endif %}
                 {% endwith %}
 
-                <label>Username: </label> 
-                <input name="username" type="text" required minlength="3" maxlength="20"> 
-                
-                <label>Email (optional for password reset): </label>
-                <input name="email" type="email" placeholder="your@email.com">
-                
-                <label>Password: </label> 
-                <input name="password" type="password" required minlength="8"> 
-                <small style="color: #6f6c91; display: block; margin-bottom: 10px;">
-                    Must be at least 8 characters
-                </small>
-                
-                <input type="submit" value="Sign Up">
-            </form>
-            
-            <a href="/login">Already have an account? Log In</a>
+                <form method="POST" action="/signup" class="auth-form">
+                    <div class="form-group">
+                        <input type="text" name="username" placeholder="Name" required minlength="3" maxlength="20" class="form-input">
+                    </div>
+
+                    <div class="form-group">
+                        <input type="email" name="email" placeholder="Email" class="form-input">
+                    </div>
+
+                    <div class="form-group">
+                        <input type="password" name="password" placeholder="Password" required minlength="8" class="form-input">
+                    </div>
+
+                    <div class="form-group">
+                        <input type="password" name="confirm_password" placeholder="Confirm Password" required minlength="8" class="form-input">
+                    </div>
+
+                    <button type="submit" class="btn-submit">Create Account</button>
+                </form>
+
+                <p class="form-footer">
+                    Already have an account? <a href="/login" class="form-link">Login</a>
+                </p>
+            </div>
         </div>
     </div>
-
-    <footer>
-        <p>&copy; 2025 Mental Health Hub. All rights reserved.</p>
-    </footer>
 </body>
 </html>

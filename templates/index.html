@@ -4,168 +4,180 @@
     <meta charset="UTF-8">
     <title>Eira – Your safe space for mental wellbeing</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="/static/style_redesigned.css">
 </head>
 
-<body>
-    <!-- TOP BAR + HERO -->
-    <header class="landing-header">
-        <div class="landing-top">
-            <div class="landing-brand">
-                <!-- Logo block -->
-                <div class="logo-card">
-                    <img src="/static/eiralogo.png" alt="Eira Logo" class="logo-large">
-                </div>
-                <div class="brand-text">
-                    <h1>Your safe space for mental wellbeing</h1>
-                    <p>
-                        Track your mood, journal your thoughts, and find support—all in one
-                        friendly place designed for students like you.
-                    </p>
-                    <div class="hero-buttons">
-                        <a href="/signup" class="btn btn-primary">Sign Up</a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- HORIZONTAL NAV: Contacts | Login | Get Started -->
-            <nav class="landing-nav">
-                <a href="/contacts.html">Contacts</a>
-                <a href="/login">Login</a>
-                <a href="/signup" class="btn btn-dark">Get Started</a>
-            </nav>
+<body class="landing-page">
+    <!-- TOP NAVIGATION BAR -->
+    <nav class="landing-nav">
+        <div class="nav-logo">
+            <img src="/static/eiralogo.png" alt="Eira Logo" class="nav-logo-img">
+            <span class="nav-logo-text">EIRA</span>
         </div>
-    </header>
+        <div class="nav-links">
+            <a href="#contact">Contacts</a>
+            <a href="/login">Login</a>
+            <a href="/signup" class="btn-get-started">Get Started</a>
+        </div>
+    </nav>
 
-    <!-- FEATURES SECTION (keep "Features:" header as-is below) -->
-    <section id="features" class="features-section">
-        <h2>Features:</h2>
-        <!-- rest of your features grid stays the same -->
-
+    <!-- HERO SECTION -->
+    <section class="hero-section">
+        <div class="hero-content">
+            <h1 class="hero-title">Your safe space for mental wellbeing</h1>
+            <p class="hero-subtitle">
+                Track your mood, journal your thoughts, and find support—all in one<br>
+                friendly place designed for students like you.
+            </p>
+            <a href="/signup" class="btn-signup">Sign Up</a>
+        </div>
+    </section>
 
     <!-- FEATURES SECTION -->
-    <main>
-        <section id="features" class="features-section">
-            <h2>Features:</h2>
-
-            <div class="features-grid">
-                <!-- Journaling card -->
-                <article class="feature-card">
-                    <div class="feature-mockup">
-                        <div class="mock-title">A Title for Your Entry</div>
-                        <div class="mock-sub">How does this story feel?</div>
-                        <div class="mock-tags-row">
-                            <span class="mock-tag">Good</span>
-                            <span class="mock-tag">Neutral</span>
-                            <span class="mock-tag">Bad</span>
-                            <span class="mock-tag">Excited</span>
-                            <span class="mock-tag">Tired</span>
-                        </div>
-                        <div class="mock-sub">What is this entry mostly about?</div>
-                        <div class="mock-tags-row">
-                            <span class="mock-tag">School</span>
-                            <span class="mock-tag">Friends</span>
-                            <span class="mock-tag">Family</span>
-                            <span class="mock-tag">Health</span>
-                            <span class="mock-tag">Wins</span>
-                            <span class="mock-tag">Struggles</span>
-                            <span class="mock-tag">Goals</span>
-                            <span class="mock-tag">Random</span>
-                        </div>
-                        <div class="mock-sub">What’s on your mind today?</div>
-                        <div class="mock-input"></div>
+    <section class="features-section">
+        <h2 class="features-heading">Features:</h2>
+        
+        <div class="features-grid">
+            <!-- Feature 1: Journaling -->
+            <div class="feature-card">
+                <div class="feature-mockup journaling-mockup">
+                    <div class="mock-title-input">A Title for Your Entry</div>
+                    
+                    <div class="mock-question">How does this story feel?</div>
+                    <div class="mock-pills-row">
+                        <span class="mock-pill mood-good">😊 Good</span>
+                        <span class="mock-pill mood-neutral">😐 Neutral</span>
+                        <span class="mock-pill mood-bad">😔 Bad</span>
                     </div>
-                    <h3>Journaling</h3>
-                    <p>Start writing down your thoughts and feelings. Review and reflect on your past entries.</p>
-                </article>
-
-                <!-- Calendar card -->
-                <article class="feature-card">
-                    <div class="feature-mockup calendar-mockup">
-                        <div class="mock-title center">February 2026</div>
-                        <table class="mock-calendar">
-                            <thead>
-                                <tr>
-                                    <th>Mon</th><th>Tue</th><th>Wed</th>
-                                    <th>Thu</th><th>Fri</th><th>Sat</th><th>Sun</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr><td></td><td></td><td></td><td></td><td>1</td><td>2</td><td>3</td></tr>
-                                <tr><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td></tr>
-                                <tr><td class="highlight">11</td><td>12</td><td>13</td><td>14</td><td>15</td><td>16</td><td>17</td></tr>
-                                <tr><td>18</td><td>19</td><td>20</td><td>21</td><td>22</td><td>23</td><td>24</td></tr>
-                                <tr><td>25</td><td>26</td><td>27</td><td>28</td><td></td><td></td><td></td></tr>
-                            </tbody>
-                        </table>
+                    <div class="mock-pills-row">
+                        <span class="mock-pill mood-excited">😁 Excited</span>
+                        <span class="mock-pill mood-tired">😴 Tired</span>
                     </div>
-                    <h3>Calendar &amp; Daily Check‑Ins</h3>
-                    <p>Track your mood and visualise your progress over time.</p>
-                </article>
-
-                <!-- AI Assistant card -->
-                <article class="feature-card">
-                    <div class="feature-mockup chat-mockup">
-                        <div class="chat-bubble bot">
-                            Hi! I’m Eira’s wellbeing assistant. I can help with stress, sleep,
-                            motivation, or just listen. What’s on your mind?
-                        </div>
-                        <div class="chat-bubble user">
-                            I can’t sleep well lately.
-                        </div>
-                        <div class="chat-bubble bot">
-                            Sleep struggles make everything harder. Try writing down tomorrow’s
-                            tasks before bed – it tells your brain “it’s handled”.
-                        </div>
+                    
+                    <div class="mock-question">What is this entry mostly about?</div>
+                    <div class="mock-pills-row">
+                        <span class="mock-pill">School</span>
+                        <span class="mock-pill">Friends</span>
+                        <span class="mock-pill">Family</span>
+                        <span class="mock-pill">Health</span>
                     </div>
-                    <h3>AI Assistant</h3>
-                    <p>Get instant mental health support and gentle tips when you need them.</p>
-                </article>
+                    <div class="mock-pills-row">
+                        <span class="mock-pill">Wins</span>
+                        <span class="mock-pill">Struggles</span>
+                        <span class="mock-pill">Goals</span>
+                        <span class="mock-pill">Random</span>
+                    </div>
+                    
+                    <div class="mock-question">What's on your mind today?</div>
+                    <div class="mock-textarea"></div>
+                </div>
+                <h3>Journaling</h3>
+                <p>Start writing down your thoughts and feelings. Review and reflect on your past entries.</p>
             </div>
-        </section>
-    </main>
+
+            <!-- Feature 2: Calendar -->
+            <div class="feature-card">
+                <div class="feature-mockup calendar-mockup">
+                    <div class="mock-calendar-header">February 2026</div>
+                    <table class="mock-calendar-table">
+                        <thead>
+                            <tr>
+                                <th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td></td><td></td><td></td><td></td><td></td><td></td><td>1</td>
+                            </tr>
+                            <tr>
+                                <td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td>
+                            </tr>
+                            <tr>
+                                <td>9</td><td>10</td><td class="calendar-highlight">11</td><td>12</td><td>13</td><td>14</td><td>15</td>
+                            </tr>
+                            <tr>
+                                <td>16</td><td>17</td><td>18</td><td>19</td><td>20</td><td>21</td><td>22</td>
+                            </tr>
+                            <tr>
+                                <td>23</td><td>24</td><td>25</td><td>26</td><td>27</td><td>28</td><td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <h3>Calendar & Daily Check-Ins</h3>
+                <p>Track your mood and visualise your progress over time.</p>
+            </div>
+
+            <!-- Feature 3: AI Assistant -->
+            <div class="feature-card">
+                <div class="feature-mockup chat-mockup">
+                    <div class="chat-message assistant-message">
+                        <span class="chat-icon">🤖</span>
+                        <div class="chat-text">
+                            Hi! I'm Eira's wellbeing assistant 🙂 I can help with stress, sleep, motivation, or just listen. What's on your mind?
+                        </div>
+                    </div>
+                    
+                    <div class="mock-learn-more">
+                        <span>Learn more →</span>
+                    </div>
+                    
+                    <div class="chat-message assistant-message">
+                        <div class="chat-text">
+                            Sleep struggles make everything harder. Try writing down tomorrow's tasks before bed - it tells your brain "it's handled."
+                        </div>
+                    </div>
+                </div>
+                <h3>AI Assistant</h3>
+                <p>Get instant mental health support and tips</p>
+            </div>
+        </div>
+    </section>
 
     <!-- FOOTER SECTION -->
     <footer class="landing-footer">
-        <div class="footer-top">
+        <div class="footer-main">
             <div class="footer-brand">
-                <h2>Eira</h2>
-                <div class="creator">
-                    <div class="creator-avatar"></div>
-                    <div>
-                        <p class="creator-label">Creator’s socials:</p>
-                        <!-- Replace with real links if you want -->
-                        <div class="social-row">
-                            <span>⦿</span><span>⦿</span><span>⦿</span><span>⦿</span>
-                        </div>
+                <h2 class="footer-logo">Eira</h2>
+                <a href="/signup" class="btn-footer-signup">Sign Up</a>
+                <a href="/login" class="btn-footer-login">Login</a>
+            </div>
+
+            <div class="footer-creator">
+                <div class="creator-avatar">
+                    <img src="/static/eiralogo.png" alt="Creator" class="creator-img">
+                </div>
+                <div class="creator-info">
+                    <p class="creator-label">Creator's socials:</p>
+                    <div class="social-icons">
+                        <a href="#" class="social-icon">📘</a>
+                        <a href="#" class="social-icon">📧</a>
+                        <a href="#" class="social-icon">▶️</a>
+                        <a href="#" class="social-icon">📷</a>
                     </div>
                 </div>
             </div>
 
             <div class="footer-columns">
-                <div class="footer-column">
+                <div class="footer-col">
                     <h4>Product</h4>
                     <a href="/dashboard">Dashboard</a>
                     <a href="/journal_entry">Journal</a>
                     <a href="/ai_assistant">AI Assistant</a>
                 </div>
-                <div class="footer-column">
+                
+                <div class="footer-col">
                     <h4>Resources</h4>
-                    <span>User Guide</span>
+                    <a href="#guide">User Guide</a>
                 </div>
-                <div class="footer-column">
+                
+                <div class="footer-col">
                     <h4>Support</h4>
-                    <span>Contact Information</span>
+                    <a href="#contact" id="contact">Contact Information</a>
                 </div>
-            </div>
-
-            <div class="footer-cta">
-                <a href="/signup" class="btn btn-primary">Sign Up</a>
-                <a href="/login" class="btn btn-outline">Login</a>
             </div>
         </div>
-
-        <p class="footer-bottom">&copy; 2026 Eira. All rights reserved.</p>
     </footer>
+
 </body>
 </html>

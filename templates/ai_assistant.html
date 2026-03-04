@@ -3,183 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <title>Eira - AI Assistant</title>
-    <style>
-        .chat-container { max-width: 800px; margin: 20px auto; height: 600px; border: 1px solid #e0e0e0; border-radius: 15px; display: flex; flex-direction: column; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-        .chat-messages { flex: 1; padding: 25px; overflow-y: auto; background: white; border-radius: 15px 15px 0 0; }
-        .message { margin-bottom: 20px; display: flex; animation: fadeIn 0.3s ease-in; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .message.user { justify-content: flex-end; }
-        .message.user .message-content { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-bottom-right-radius: 5px; }
-        .message.assistant { justify-content: flex-start; }
-        .message.assistant .message-content { background: #f8f9fa; color: #333; border-bottom-left-radius: 5px; border: 1px solid #e9ecef; }
-        .message-content { max-width: 75%; padding: 15px 20px; border-radius: 20px; font-size: 15px; line-height: 1.5; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        .typing-indicator { display: none; justify-content: flex-start; padding: 15px 25px; }
-        .typing-dots { display: flex; gap: 4px; }
-        .typing-dots span { width: 8px; height: 8px; background: #999; border-radius: 50%; animation: typing 1.4s infinite; }
-        .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
-        .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
-        @keyframes typing { 0%,60%,100% { transform: scale(1); opacity: 0.5; } 30% { transform: scale(1.2); opacity: 1; } }
-        .chat-input { padding: 25px; border-top: 1px solid #e0e0e0; display: flex; gap: 15px; background: white; border-radius: 0 0 15px 15px; }
-        .chat-input input { flex: 1; padding: 15px 20px; border: 2px solid #e0e0e0; border-radius: 25px; outline: none; font-size: 15px; transition: all 0.3s ease; }
-        .chat-input input:focus { border-color: #667eea; box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1); }
-        .chat-input button { padding: 15px 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 25px; cursor: pointer; font-weight: 600; transition: transform 0.2s; }
-        .chat-input button:hover { transform: scale(1.05); }
-        .quick-buttons { padding: 0 25px 20px; display: flex; flex-wrap: wrap; gap: 12px; background: white; }
-        .quick-btn { padding: 12px 20px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; border: none; border-radius: 25px; cursor: pointer; font-size: 14px; font-weight: 500; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(240, 147, 251, 0.3); }
-        .quick-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(240, 147, 251, 0.4); }
-    </style>
+    <link rel="stylesheet" href="/static/style_redesigned.css">
+    <title>Eira-AI - AI Assistant</title>
 </head>
-<body>
-    <header>
-        <img src="{{ url_for('static', filename='eiralogo.png') }}" alt="Eira Logo" class="logo">
-        <nav class="navbar">
-            <h1 class="nav-left">Eira!</h1>
-            <div>
-                <a href="{{ url_for('dashboard') }}">Dashboard</a>
-                <a href="{{ url_for('calendar_view') }}">Calendar</a>
-                <a href="{{ url_for('history') }}">History</a>
-                <a href="{{ url_for('logout') }}">Logout</a>
-            </div>
-        </nav>
-    </header>
-    <div class="main-content">
-        <section class="intro">
-            <h2>🤖 Hi {{ username }}, I'm your AI Wellbeing Assistant</h2>
-            <p>Click a quick button or type below to get support.</p>
-        </section>
+<body class="ai-assistant-page">
+    <!-- TOP BAR -->
+    <div class="ai-topbar">
+        <a href="/dashboard" class="btn-back-simple">Back</a>
+        <h1 class="ai-title">Eira-AI</h1>
+        <a href="/dashboard" class="btn-dashboard-simple">Dashboard</a>
+    </div>
 
-        <div class="chat-container">
-            <div class="chat-messages" id="chatMessages"></div>
-            <div class="typing-indicator" id="typingIndicator">
-                <div class="message assistant">
-                    <div class="message-content">
-                        Eira is typing<span class="typing-dots"><span></span><span></span><span></span></span>
-                    </div>
+    <!-- CHAT CONTAINER -->
+    <div class="ai-chat-container">
+        <!-- Chat Messages Area -->
+        <div class="ai-chat-messages" id="chatMessages">
+            <!-- Initial message from AI -->
+            <div class="ai-message bot-message">
+                <span class="bot-icon">🤖</span>
+                <div class="message-bubble bot-bubble">
+                    Hi! I am here to listen and support you. How are you feeling today? Feel free to share what's on your mind, or click one of the topics below to get started.
                 </div>
-            </div>
-            <div class="quick-buttons" id="quickButtons">
-                <button class="quick-btn" data-response="stress">Feeling stressed</button>
-                <button class="quick-btn" data-response="sleep">Can't sleep well</button>
-                <button class="quick-btn" data-response="motivation">Need motivation</button>
-                <button class="quick-btn" data-response="down">Feeling down</button>
-                <button class="quick-btn" data-response="anxious">Feeling anxious</button>
-            </div>
-            <div class="chat-input">
-                <input type="text" id="messageInput" placeholder="How are you feeling today?..." maxlength="500">
-                <button onclick="sendMessage()">Send</button>
             </div>
         </div>
 
-        <div style="text-align: center; margin: 30px auto; max-width: 800px; padding: 20px; background: #fff3cd; border-radius: 10px; border-left: 5px solid #ffc107;">
-            <p><strong>💙 Important:</strong> I'm a supportive friend, not a therapist. For serious concerns, please reach out to a professional.</p>
+        <!-- Topic Pills -->
+        <div class="ai-topic-pills">
+            <button class="topic-pill-ai" data-topic="stress">Managing Stress</button>
+            <button class="topic-pill-ai" data-topic="sleep">Sleep Troubles</button>
+            <button class="topic-pill-ai" data-topic="motivation">Need Motivation</button>
+            <button class="topic-pill-ai" data-topic="down">Feeling Down</button>
+            <button class="topic-pill-ai" data-topic="anxious">Feeling Anxious</button>
+        </div>
+
+        <!-- Input Area -->
+        <div class="ai-input-container">
+            <input type="text" id="userInput" placeholder="Start writing your message..." class="ai-input">
+            <button id="sendBtn" class="ai-send-btn">Send</button>
         </div>
     </div>
 
-    <footer>
-        <p>&copy; 2026 Eira - Mental Health Companion</p>
-    </footer>
-
     <script>
         const responses = {
-            stress: ["Stress can feel overwhelming, but you're stronger than it feels right now. Try this: breathe in for 4 seconds, hold for 7, exhale for 8. Repeat 3 times.", "What's one tiny thing you can do in the next 5 minutes to feel even 1% better? Sometimes small steps make a big difference.", "This feeling won't last forever. You've gotten through tough moments before. What helped you last time?", "Your body holds stress physically. Try rolling your shoulders back slowly or stretching your neck side to side."],
-            sleep: ["Sleep struggles make everything harder. Try writing down tomorrow's tasks before bed - it tells your brain 'it's handled.'", "No screens 30 minutes before bed can make a huge difference. What if you replaced scrolling with 5 minutes of reading?", "Create a 'wind down' ritual: dim lights, same time each night. Your body loves routine.", "Try this: lie down, tense every muscle for 5 seconds, then release. Works like magic for many."],
-            motivation: ["The 2-minute rule: if it takes less than 2 minutes, do it now. Momentum builds from tiny wins.", "What's the smallest possible version of your next task? Make it laughably easy, then do it.", "Progress > perfection. One small step today beats perfect plans tomorrow.", "You're capable of more than you think. Pick your tiniest next action and take it now."],
-            down: ["It's brave to notice when you're down. What usually brings you even a tiny bit of comfort?", "Try the 5-4-3-2-1 ground: 5 things you see, 4 you can touch, 3 you hear, 2 you smell, 1 taste.", "You're not alone. Even small connections (pet, plant, playlist) remind us we're part of something.", "This cloud will pass. What felt even slightly better yesterday?"],
-            anxious: ["Anxiety tricks us into thinking danger is now. Ask yourself: 'Is this a real threat or just my mind racing?'", "Your nervous system needs calming. Try box breathing: 4 sec in, 4 hold, 4 out, 4 hold. Repeat.", "Write your worries on paper, then write one calming truth beside each. Seeing it helps.", "You're safe right now. Name 3 things you can see, hear, and feel in this moment."],
-            default: ["Thanks for sharing - putting feelings into words is powerful.", "What would feel like a good next step for you right now?", "You're doing important work just by checking in with yourself.", "Sometimes the first step is just noticing. You've done that."]
+            stress: [
+                "Stress can feel overwhelming, but you're stronger than it feels right now. Try this: breathe in for 4 seconds, hold for 7, exhale for 8. Repeat 3 times.",
+                "What's one tiny thing you can do in the next 5 minutes to feel even 1% better? Sometimes small steps make a big difference.",
+                "This feeling won't last forever. You've gotten through tough moments before. What helped you last time?"
+            ],
+            sleep: [
+                "Sleep struggles make everything harder. Try writing down tomorrow's tasks before bed - it tells your brain 'it's handled.'",
+                "No screens 30 minutes before bed can make a huge difference. What if you replaced scrolling with 5 minutes of reading?",
+                "Create a 'wind down' ritual: dim lights, same time each night. Your body loves routine."
+            ],
+            motivation: [
+                "The 2-minute rule: if it takes less than 2 minutes, do it now. Momentum builds from tiny wins.",
+                "What's the smallest possible version of your next task? Make it laughably easy, then do it.",
+                "Progress > perfection. One small step today beats perfect plans tomorrow."
+            ],
+            down: [
+                "It's brave to notice when you're down. What usually brings you even a tiny bit of comfort?",
+                "Try the 5-4-3-2-1 grounding: 5 things you see, 4 you can touch, 3 you hear, 2 you smell, 1 taste.",
+                "You're not alone. Even small connections (pet, plant, playlist) remind us we're part of something."
+            ],
+            anxious: [
+                "Anxiety tricks us into thinking danger is now. Ask yourself: 'Is this a real threat or just my mind racing?'",
+                "Your nervous system needs calming. Try box breathing: 4 sec in, 4 hold, 4 out, 4 hold. Repeat.",
+                "You're safe right now. Name 3 things you can see, hear, and feel in this moment."
+            ],
+            default: [
+                "Thanks for sharing - putting feelings into words is powerful.",
+                "What would feel like a good next step for you right now?",
+                "You're doing important work just by checking in with yourself."
+            ]
         };
 
-        let conversationHistory = [];
-        const maxHistory = 5;
+        const chatMessages = document.getElementById('chatMessages');
+        const userInput = document.getElementById('userInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const topicPills = document.querySelectorAll('.topic-pill-ai');
 
-        window.onload = function() {
-            addMessage("Hi! I'm Eira's wellbeing assistant 🤗 I can help with stress, sleep, motivation, or just listen. What's on your mind?", 'assistant');
-        };
+        function addMessage(text, isBot = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = isBot ? 'ai-message bot-message' : 'ai-message user-message';
+            
+            if (isBot) {
+                messageDiv.innerHTML = `
+                    <span class="bot-icon">🤖</span>
+                    <div class="message-bubble bot-bubble">${text}</div>
+                `;
+            } else {
+                messageDiv.innerHTML = `
+                    <div class="message-bubble user-bubble">${text}</div>
+                `;
+            }
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function getResponse(message) {
+            const lowerMsg = message.toLowerCase();
+            
+            if (lowerMsg.includes('stress') || lowerMsg.includes('overwhelm')) {
+                return responses.stress[Math.floor(Math.random() * responses.stress.length)];
+            } else if (lowerMsg.includes('sleep') || lowerMsg.includes('tired') || lowerMsg.includes('insomnia')) {
+                return responses.sleep[Math.floor(Math.random() * responses.sleep.length)];
+            } else if (lowerMsg.includes('motivat') || lowerMsg.includes('lazy') || lowerMsg.includes('procrastin')) {
+                return responses.motivation[Math.floor(Math.random() * responses.motivation.length)];
+            } else if (lowerMsg.includes('sad') || lowerMsg.includes('down') || lowerMsg.includes('depress')) {
+                return responses.down[Math.floor(Math.random() * responses.down.length)];
+            } else if (lowerMsg.includes('anx') || lowerMsg.includes('worry') || lowerMsg.includes('panic')) {
+                return responses.anxious[Math.floor(Math.random() * responses.anxious.length)];
+            }
+            
+            return responses.default[Math.floor(Math.random() * responses.default.length)];
+        }
 
         function sendMessage() {
-            const input = document.getElementById('messageInput');
-            const message = input.value.trim();
+            const message = userInput.value.trim();
             if (!message) return;
-            addMessage(message, 'user');
-            input.value = '';
-            hideQuickButtons();
-            showTypingIndicator();
+            
+            addMessage(message, false);
+            userInput.value = '';
+            
             setTimeout(() => {
-                hideTypingIndicator();
-                const response = generateResponse(message.toLowerCase());
-                addMessage(response, 'assistant');
-            }, 1200 + Math.random() * 800);
+                const response = getResponse(message);
+                addMessage(response, true);
+            }, 800);
         }
 
-        function generateResponse(message) {
-            conversationHistory.push({ user: message, timestamp: Date.now() });
-            if (conversationHistory.length > maxHistory * 2) {
-                conversationHistory = conversationHistory.slice(-maxHistory * 2);
-            }
-            if (message.includes('stress') || message.includes('overwhelmed')) return randomResponse('stress');
-            if (message.includes('sleep') || message.includes('tired') || message.includes('insomnia')) return randomResponse('sleep');
-            if (message.includes('motivat') || message.includes('lazy') || message.includes('procrastin')) return randomResponse('motivation');
-            if (message.includes('sad') || message.includes('down') || message.includes('depressed')) return randomResponse('down');
-            if (message.includes('anx') || message.includes('worry') || message.includes('panic')) return randomResponse('anxious');
-            const recentContext = conversationHistory.slice(-2)[0]?.user || '';
-            if (recentContext.includes('stress')) return randomResponse('stress');
-            if (recentContext.includes('sleep')) return randomResponse('sleep');
-            return randomResponse('default');
-        }
+        sendBtn.addEventListener('click', sendMessage);
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
 
-        function randomResponse(key) {
-            const options = responses[key] || responses.default;
-            return options[Math.floor(Math.random() * options.length)];
-        }
-
-        function addMessage(text, sender) {
-            const messages = document.getElementById('chatMessages');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${sender}`;
-            messageDiv.innerHTML = `<div class="message-content">${text}</div>`;
-            messages.appendChild(messageDiv);
-            messages.scrollTop = messages.scrollHeight;
-        }
-
-        function showTypingIndicator() {
-            document.getElementById('typingIndicator').style.display = 'flex';
-            document.getElementById('chatMessages').style.display = 'none';
-        }
-
-        function hideTypingIndicator() {
-            document.getElementById('typingIndicator').style.display = 'none';
-            document.getElementById('chatMessages').style.display = 'block';
-        }
-
-        function hideQuickButtons() {
-            document.getElementById('quickButtons').style.display = 'none';
-        }
-
-        document.querySelectorAll('.quick-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const message = this.dataset.response;
-                addMessage(message.charAt(0).toUpperCase() + message.slice(1), 'user');
-                hideQuickButtons();
-                showTypingIndicator();
+        topicPills.forEach(pill => {
+            pill.addEventListener('click', function() {
+                const topic = this.dataset.topic;
+                const topicText = this.textContent;
+                
+                addMessage(topicText, false);
+                
                 setTimeout(() => {
-                    hideTypingIndicator();
-                    const response = generateResponse(message.toLowerCase());
-                    addMessage(response, 'assistant');
-                    document.getElementById('messageInput').focus();
-                }, 1500);
+                    const response = responses[topic][Math.floor(Math.random() * responses[topic].length)];
+                    addMessage(response, true);
+                }, 800);
             });
         });
-
-        document.getElementById('messageInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendMessage();
-            }
-        });
-
-        document.getElementById('messageInput').focus();
     </script>
 </body>
 </html>

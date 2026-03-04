@@ -3,69 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/static/style.css">
-    <title>Eira - Calendar</title>
+    <link rel="stylesheet" href="/static/style_redesigned.css">
+    <title>Calendar View - Eira</title>
 </head>
-
-<body>
-    <header>
-        <img src="/static/eiralogo.png" alt="Eira Logo" class="logo">
-        <nav class="navbar">
-            <h1 class="nav-left">Eira!</h1>
-            <div>
-                <a href="/dashboard">Dashboard</a>
-                <a href="/history">History</a>
-                <a href="/logout">Logout</a>
-            </div>
-        </nav>
-    </header>
-
-    <div class="main-content">
-        <section class="intro" style="max-width: 900px;">
-            <h2>Journal Calendar</h2>
-            <p>Select a date to view your entries.</p>
-        </section>
-
-        <div class="calendar-container">
-            <div class="calendar-header">
-                <a href="/calendar?year={{ prev_month.year }}&month={{ prev_month.month }}" class="nav-arrow">&lt; Prev</a>
-                <h3 class="month-title">{{ month_name }} {{ current_year }}</h3>
-                <a href="/calendar?year={{ next_month.year }}&month={{ next_month.month }}" class="nav-arrow">Next &gt;</a>
-            </div>
-
-            <div class="calendar-grid">
-                <div class="day-header">Sun</div>
-                <div class="day-header">Mon</div>
-                <div class="day-header">Tue</div>
-                <div class="day-header">Wed</div>
-                <div class="day-header">Thu</div>
-                <div class="day-header">Fri</div>
-                <div class="day-header">Sat</div>
-                
-                {% for day in calendar_days %}
-                    {% if day is none %}
-                        <div class="day-cell empty-day"></div>
-                    {% else %}
-                        {% set date_str = '%s-%02d-%02d' | format(current_year, current_month, day) %}
-                        
-                        <div class="day-cell {% if date_str in entries_by_date %}entry-day{% endif %}">
-                            <span class="day-number">{{ day }}</span>
-                            {% if date_str in entries_by_date %}
-                                <a href="/history?date={{ date_str }}" class="entry-link">
-                                    <span class="entry-indicator"></span>
-                                </a>
-                            {% endif %}
-                        </div>
-                    {% endif %}
-                {% endfor %}
-            </div>
+<body class="calendar-page">
+    <div class="calendar-container-page">
+        <!-- HEADER -->
+        <div class="calendar-header-section">
+            <h1 class="calendar-main-title">Calendar View</h1>
+            <p class="calendar-subtitle">See your journaling journey at a glance</p>
         </div>
 
-        <a href="/dashboard" style="margin-top: 30px;">Back to Dashboard</a>
-    </div>
+        <div class="calendar-layout">
+            <!-- CALENDAR GRID -->
+            <div class="calendar-main-area">
+                <!-- Month Navigation -->
+                <div class="calendar-nav">
+                    <a href="/calendar?year={{ prev_month.year }}&month={{ prev_month.month }}" class="calendar-nav-btn">&lt;</a>
+                    <h2 class="calendar-month-title">{{ month_name }} {{ current_year }}</h2>
+                    <a href="/calendar?year={{ next_month.year }}&month={{ next_month.month }}" class="calendar-nav-btn">&gt;</a>
+                </div>
 
-    <footer>
-        <p>&copy; 2025 Mental Health Hub. All rights reserved.</p>
-    </footer>
+                <!-- Calendar Grid -->
+                <table class="calendar-grid-table">
+                    <thead>
+                        <tr>
+                            <th>SUN</th>
+                            <th>MON</th>
+                            <th>TUE</th>
+                            <th>WED</th>
+                            <th>THU</th>
+                            <th>FRI</th>
+                            <th>SAT</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% set day_index = 0 %}
+                        {% for week in range(5) %}
+                        <tr>
+                            {% for day_of_week in range(7) %}
+                                {% if day_index < calendar_days | length %}
+                                    {% set day = calendar_days[day_index] %}
+                                    {% if day is none %}
+                                        <td class="calendar-day empty-day"></td>
+                                    {% else %}
+                                        {% set date_str = '%s-%02d-%02d' | format(current_year, current_month, day) %}
+                                        {% if date_str in entries_by_date %}
+                                            <td class="calendar-day has-entry">
+                                                <a href="/history?date={{ date_str }}" class="day-link">
+                                                    <span class="day-number">{{ day }}</span>
+                                                    <span class="entry-dot">📝</span>
+                                                </a>
+                                            </td>
+                                        {% else %}
+                                            <td class="calendar-day">
+                                                <span class="day-number">{{ day }}</span>
+                                            </td>
+                                        {% endif %}
+                                    {% endif %}
+                                    {% set day_index = day_index + 1 %}
+                                {% endif %}
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- SIDEBAR: Stats & Actions -->
+            <aside class="calendar-sidebar">
+                <div class="calendar-stats-box">
+                    <p class="stats-label">Click on a Highlighted Date to view Entries</p>
+                    
+                    <div class="stat-item">
+                        <span class="stat-icon">📝</span>
+                        <div>
+                            <p class="stat-value">{{ entries_by_date | length }}</p>
+                            <p class="stat-label-small">Entries This Month:</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-item">
+                        <span class="stat-icon">🗓️</span>
+                        <div>
+                            <p class="stat-value">{{ entries_by_date | length }}</p>
+                            <p class="stat-label-small">Days Journaled:</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="calendar-action-buttons">
+                    <a href="/dashboard" class="calendar-action-btn">Dashboard</a>
+                    <a href="/ai_assistant" class="calendar-action-btn">AI Assistant</a>
+                </div>
+            </aside>
+        </div>
+    </div>
 </body>
 </html>

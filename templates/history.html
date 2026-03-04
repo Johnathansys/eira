@@ -3,60 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/static/style.css">
-    <title>Eira - History</title>
+    <link rel="stylesheet" href="/static/style_redesigned.css">
+    <title>Journal History - Eira</title>
 </head>
-
-<body>
-    <header>
-        <img src="/static/eiralogo.png" alt="Eira Logo" class="logo">
-        <nav class="navbar">
-            <h1 class="nav-left">Eira!</h1>
-            <div>
-                <a href="/dashboard">Dashboard</a>
-                <a href="/logout">Logout</a>
-            </div>
-        </nav>
-    </header>
-
-    <div class="main-content">
-        <section class="intro">
-            <h2>Your Journal History</h2>
-            <p>A record of your reflections and growth.</p>
-        </section>
-
-        <ul class="history-list">
-            {% if entries %}
-            {% for entry in entries %}
-            <li class="intro entry-item">
-                {% if entry.mood == 'happy' %}
-                    <span class="mood-icon">😊</span>
-                {% elif entry.mood == 'calm' %}
-                    <span class="mood-icon">😌</span>
-                {% elif entry.mood == 'sad' %}
-                    <span class="mood-icon">😢</span>
-                {% elif entry.mood == 'anxious' %}
-                    <span class="mood-icon">😰</span>
-                {% elif entry.mood == 'angry' %}
-                    <span class="mood-icon">😠</span>
-                {% endif %}
-
-                <a href="/entry/{{ entry.id }}">{{ entry.title }}</a>
-                <span class="date">{{ entry.timestamp }}</span>
-            </li>
-            {% endfor %}
-            {% else %}
-            <p style="text-align: center; margin-top: 30px; font-size: 1.2rem; color: #6f6c91;">
-                You haven't made any journal entries yet. Time to start!
-            </p>
-            {% endif %}
-        </ul>
-
-        <a href="/dashboard">Back to Dashboard</a>
+<body class="history-page">
+    <!-- TOP BAR -->
+    <div class="history-topbar">
+        <a href="/dashboard" class="btn-back-simple">Back</a>
+        <h1 class="history-title">Journal History</h1>
+        <a href="/dashboard" class="btn-dashboard-simple">Dashboard</a>
     </div>
 
-    <footer>
-        <p>&copy; 2025 Mental Health Hub. All rights reserved.</p>
-    </footer>
+    <!-- MAIN CONTENT -->
+    <div class="history-container">
+        <p class="history-count">{{ entries | length }} entries</p>
+
+        {% if entries %}
+            <div class="history-entries-list">
+                {% for entry in entries %}
+                    <div class="history-entry-card">
+                        <a href="/entry/{{ entry.id }}" class="entry-card-link">
+                            <div class="entry-card-header">
+                                {% if entry.mood == 'happy' or entry.mood == 'good' %}
+                                    <span class="entry-mood-icon">😊</span>
+                                {% elif entry.mood == 'calm' or entry.mood == 'neutral' %}
+                                    <span class="entry-mood-icon">😌</span>
+                                {% elif entry.mood == 'sad' or entry.mood == 'bad' %}
+                                    <span class="entry-mood-icon">😢</span>
+                                {% elif entry.mood == 'anxious' %}
+                                    <span class="entry-mood-icon">😰</span>
+                                {% elif entry.mood == 'angry' %}
+                                    <span class="entry-mood-icon">😠</span>
+                                {% elif entry.mood == 'excited' %}
+                                    <span class="entry-mood-icon">😁</span>
+                                {% elif entry.mood == 'tired' %}
+                                    <span class="entry-mood-icon">😴</span>
+                                {% else %}
+                                    <span class="entry-mood-icon">📝</span>
+                                {% endif %}
+                                <h3 class="entry-title">{{ entry.title }}</h3>
+                            </div>
+                            
+                            {% if entry.mood_rating %}
+                                <p class="entry-rating">{{ entry.mood_rating }}/10</p>
+                            {% endif %}
+                            
+                            <p class="entry-timestamp">{{ entry.timestamp }}</p>
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="history-empty-state">
+                <p class="empty-icon">📔</p>
+                <p class="empty-message">You haven't made any journal entries yet.</p>
+                <a href="/journal_entry" class="btn-start-journaling">Start Journaling</a>
+            </div>
+        {% endif %}
+    </div>
 </body>
 </html>
